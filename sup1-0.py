@@ -1,20 +1,22 @@
-import urllib, urllib2, json, time, datetime, requests, os, tweepy, sys
+import urllib, urllib2, json, time, datetime, requests, os, sys
+#import tweepy
 from selenium import webdriver;
 from requests.utils import dict_from_cookiejar
 from time import gmtime, strftime
 from datetime import datetime
 from dateutil import tz
-from tweepy.auth import OAuthHandler
+#from tweepy.auth import OAuthHandler
 
 '''
-CONSUMER_KEY = ''#keep the quotes, replace this with your consumer key
-CONSUMER_SECRET = ''#keep the quotes, replace this with your consumer secret key
-ACCESS_KEY = '-'#keep the quotes, replace this with your access token
-ACCESS_SECRET = ''#keep the quotes, replace this with your access token secret
+CONSUMER_KEY = 'Jx2hLAW5fJwNfxBZnPTzZOx0w'#keep the quotes, replace this with your consumer key
+CONSUMER_SECRET = 'niJFq75JqqOJEs9E3HGuVTt7aZr0NRIER3I2mfdRXkgneTVavD'#keep the quotes, replace this with your consumer secret key
+ACCESS_KEY = '3416433207-gtFh1JXAOkh1n6MqDVzH1b06N8Cx9LLuoSiDYvb'#keep the quotes, replace this with your access token
+ACCESS_SECRET = '3zdxo0IazAzmWcHWNK3EWSeSjGk7tkLgDfo8nOc47qIvV'#keep the quotes, replace this with your access token secret
 auth = OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
 api = tweepy.API(auth)
 '''
+
 
 
 def UTCtoEST():
@@ -36,11 +38,16 @@ resp = urllib2.urlopen(req)
 data = json.loads(resp.read())
 
 
+
+items=['']
+theirVars=['']
 for i in range(len(data[u'products_and_categories'].values())):
 	for j in range(len(data[u'products_and_categories'].values()[i])):
 		item=data[u'products_and_categories'].values()[i][j]
 		name=str(item[u'name'].encode('ascii','ignore'))
 		variant=str(item[u'id'])
+		items.append(name)
+		theirVars.append(variant)
 		#api.update_status(status=UTCtoEST()+' :: '+name+' :: http://www.supremenewyork.com/shop/'+variant)
 		#print name+' :: http://www.supremenewyork.com/shop/'+variant
 
@@ -60,8 +67,17 @@ def productInCatalog():
 	global exist
 	global numOfMatches
 	global productMatch
+	global items
+	newItems=['']
 	resp = urllib2.urlopen(req)
 	data = json.loads(resp.read())
+	for i in range(len(data[u'products_and_categories'].values())):
+		for j in range(len(data[u'products_and_categories'].values()[i])):
+			item=data[u'products_and_categories'].values()[i][j]
+			name=str(item[u'name'].encode('ascii','ignore'))
+			variant=str(item[u'id'])
+			newItems.append(name)
+	print UTCtoEST()
 	for i in data[u'products_and_categories'].keys():
 		categories=data[u'products_and_categories']
 		itemsInCategory=categories[i]
@@ -75,9 +91,10 @@ def productInCatalog():
 				productMatch.append(urlNum)
 				print '\n'
 				print str(numOfMatches)+') ' +name + ' :: '+urlNum
-
-
-productInCatalog()
+	if newItems==items:
+		print 'Nothing new'
+		items=[]
+		productInCatalog()
 while exist==0:
 	print UTCtoEST()+' :: Item not found'
 	time.sleep(5)
