@@ -14,7 +14,7 @@ size1 = 'Small'
 size2 = 'Medium'
 
 [productColor]
-#String eg. 'Red', 'N/A'
+#String eg. 'Red'
 color1 = 'gray'
 color2 = 'camo'
 
