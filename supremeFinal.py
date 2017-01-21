@@ -159,24 +159,24 @@ def supremeItemBuy(keyword, poll, color, sz, qty, ghostCheckoutPrevention):
             'store_credit_id':          '',      
             'from_mobile':              '1',
             'cookie-sub':               '%7B%22'+str(variant)+'%22%3A1%7D',                          # cookie-sub: eg. {"VARIANT":1} urlencoded
-            'same_as_billing_address':  '1',                                    
-            'order[billing_name]':      user_config.billingName,#'anon mous',                        # FirstName LastName
-            'order[email]':             user_config.email,#'anon@mailinator.com',                    # email@domain.com
-            'order[tel]':               user_config.phone,#'999-999-9999',                           # phone-number-here
-            'order[billing_address]':   user_config.streetAddress,#'123 Seurat lane',                # your address
+            'same_as_billing_address':  '1',
+            'order[billing_name]':      user_config.billingName,
+            'order[email]':             user_config.email,
+            'order[tel]':               user_config.phone,
+            'order[billing_address]':   user_config.streetAddress,
             'order[billing_address_2]': '',
-            'order[billing_zip]':       user_config.zipCode,#'90210',                                # zip code
-            'order[billing_city]':      user_config.shippingCity,#'Beverly Hills',                   # city
-            'order[billing_state]':     user_config.shippingState,#'CA',                             # state
-            'order[billing_country]':   user_config.shippingCountry,#'USA',                          # country
-            'store_address':            '1',                                
-            'credit_card[type]':        user_config.cardType,#'visa',                                # master or visa
-            'credit_card[cnb]':         user_config.cardNumber,#'9999 9999 9999 9999',               # credit card number
-            'credit_card[month]':       user_config.cardMonth,#'01',                                 # expiration month
-            'credit_card[year]':        user_config.cardYear,#'2026',                                # expiration year
-            'credit_card[vval]':        user_config.cardCVV,#'123',                                  # cvc/cvv
+            'order[billing_zip]':       user_config.zipCode,
+            'order[billing_city]':      user_config.shippingCity,
+            'order[billing_state]':     user_config.shippingState,
+            'order[billing_country]':   user_config.shippingCountry,
+            'store_address':            '1',
+            'credit_card[type]':        user_config.cardType,
+            'credit_card[cnb]':         user_config.cardNumber,
+            'credit_card[month]':       user_config.cardMonth,
+            'credit_card[year]':        user_config.cardYear,
+            'credit_card[vval]':        user_config.cardCVV,
             'order[terms]':             '0',
-            'order[terms]':             '1'                
+            'order[terms]':             '1'
         }
 
         # GHOST CHECKOUT PREVENTION WITH ROLLING PRINT
