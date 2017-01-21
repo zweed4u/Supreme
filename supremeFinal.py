@@ -9,7 +9,7 @@
 #TODO: wrap search and checkout in function
 #implement better threading/search thread
 #use config vals
-import sys, json, time, requests, urllib2, threading, ConfigParser
+import os, sys, json, time, requests, urllib2, threading, ConfigParser
 from datetime import datetime
 
 rootDirectory = os.getcwd()
