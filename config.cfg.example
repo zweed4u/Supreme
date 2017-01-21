@@ -1,0 +1,36 @@
+# Modify this file and save it as config.cfg
+
+[timeComponents]
+poll = #int eg. 3
+ghostCheckoutPrevention = #int eg. 5
+
+[productName]
+name1 = 'bogo'#String eg. 'Logo'
+name2 = 'hat'
+
+[productSize]
+size1 = 'Small'#String eg. 'Medium', 'OS'
+size2 = 'Medium'
+
+[productColor]
+color1 = 'red'#String eg. 'Red', 'N/A'
+color2 = 'blue'
+
+[productQty]
+amount1 = '1'#String eg. '1'
+amount2 = '1'#String eg. '1'
+
+[cardInfo] #this is a config for billing the same as shipping address
+firstAndLast = #String
+email = #String
+phone = #String
+address = #String
+zip = #String
+city = #String
+state = #String
+country = #String
+cardType = #String master, visa
+cardNumber = #String
+cardMonth = #String
+cardYear = #String
+cardCVV = #String
