@@ -27,6 +27,8 @@ def main():
     global variant
     global cw
     global styleNum
+    global myproduct
+    global sizeName
     req = urllib2.Request('http://www.supremenewyork.com/mobile_stock.json')
     req.add_header('User-Agent', "User-Agent','Mozilla/5.0 (iPhone; CPU iPhone OS 6_1_4 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10B350 Safari/8536.25")
     resp = urllib2.urlopen(req)
@@ -69,6 +71,7 @@ def main():
                         found=1;
                         variant=str(sizes['id'])
                         cw=numCW['name']
+                        sizeName=sizes['name']
                         print UTCtoEST(),':: Selecting size:', sizes['name'],'(',numCW['name'],')','(',str(sizes['id']),')'
                         
         if found ==0:
@@ -109,8 +112,6 @@ addResp=session.post(addUrl,data=addPayload,headers=addHeaders)
 
 print UTCtoEST() +' :: Checking status code of response...'
 
-print str(addResp.status_code)
-print addResp.json()
 if addResp.status_code!=200:
     print UTCtoEST() +' ::',addResp.status_code,'Error \nExiting...' #CHECK THIS - DID ITEM ADD TO CART? MAKE POST AGAIN - something like while status != 200 - wait and request again
     print
@@ -120,7 +121,9 @@ else:
         print UTCtoEST() +' :: Response Empty! - Problem Adding to Cart\nExiting...'  #CHECK THIS - DID ITEM ADD TO CART? MAKE POST AGAIN
         print
         sys.exit()
-    print UTCtoEST() +' :: '+str(cw)+' - '+addResp.json()[0]['name']+' - '+ addResp.json()[0]['size_name']+' added to cart!'
+    assert addResp.json()[0]["in_stock"]==True,"Error Message: Not in stock"
+    assert addResp.json()[0]["size_id"]==str(variant),"Error Message: Incorrect variant returned in response"
+    print UTCtoEST() +' :: '+str(myproduct)+' - '+str(cw)+' - '+str(sizeName)+' added to cart!'
     
     checkoutUrl='https://www.supremenewyork.com/checkout.json'
     checkoutHeaders={
