@@ -17,15 +17,16 @@ def UTCtoEST():
 print
 poll=raw_input("Polling interval? ")
 poll=int(poll)
-keyword=raw_input("Product name? ").title()       # hardwire here by declaring keyword as a string 
-color=raw_input("Color? ").title()                # hardwire here by declaring keyword as a string
-sz=raw_input("Size? ").title()                    # hardwire here by declaring keyword as a string
+keyword=raw_input("Product name? ").title()       # hardwire here by declaring keyword as a string - DISPLAY VALID OPTIONS IN ()
+color=raw_input("Color? ").title()                # hardwire here by declaring keyword as a string - DISPLAY VALID OPTIONS IN ()
+sz=raw_input("Size? ").title()                    # hardwire here by declaring keyword as a string - DISPLAY VALID OPTIONS IN ()
 print 
 print UTCtoEST(),':: Parsing page...'
 def main():
     global ID
     global variant
     global cw
+    global styleNum
     req = urllib2.Request('http://www.supremenewyork.com/mobile_stock.json')
     req.add_header('User-Agent', "User-Agent','Mozilla/5.0 (iPhone; CPU iPhone OS 6_1_4 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10B350 Safari/8536.25")
     resp = urllib2.urlopen(req)
@@ -61,6 +62,7 @@ def main():
             # COLORWAY TERMS HERE
             # if string1 in numCW['name'] or string2 in numCW['name']:
             if color in numCW['name'].title():
+                styleNum=numCW['id']
                 for sizes in numCW['sizes']:
                     # SIZE TERMS HERE
                     if str(sizes['name'].title()) == sz: # Medium
@@ -76,6 +78,7 @@ def main():
             sizeName=str(data['styles'][0]['sizes'][len(data['styles'][0]['sizes'])-1]['name'])
             variant=str(data['styles'][0]['sizes'][len(data['styles'][0]['sizes'])-1]['id'])
             cw=data['styles'][0]['name']
+            styleNum=data['styles'][0]['id']
             print UTCtoEST(),':: Selecting default size:',sizeName,'(',variant,')'
 main()
 
@@ -95,7 +98,9 @@ addHeaders={
     'User-Agent':        'Mozilla/5.0 (iPhone; CPU iPhone OS 7_1_2 like Mac OS X) AppleWebKit/537.51.2 (KHTML, like Gecko) Mobile/11D257',                               
     'Referer':           'http://www.supremenewyork.com/mobile'   
 }
+
 addPayload={
+    'style' : str(styleNum),
     'size': str(variant),
     'qty':  '1'
 }
@@ -104,13 +109,15 @@ addResp=session.post(addUrl,data=addPayload,headers=addHeaders)
 
 print UTCtoEST() +' :: Checking status code of response...'
 
+print str(addResp.status_code)
+print addResp.json()
 if addResp.status_code!=200:
-    print UTCtoEST() +' ::',addResp.status_code,'Error \nExiting...'
+    print UTCtoEST() +' ::',addResp.status_code,'Error \nExiting...' #CHECK THIS - DID ITEM ADD TO CART? MAKE POST AGAIN - something like while status != 200 - wait and request again
     print
     sys.exit()
 else:
-    if addResp.json()==[]:
-        print UTCtoEST() +' :: Response Empty! - Problem Adding to Cart\nExiting...'
+    if addResp.json()==[]: #FIGURE OUT WHY EMPTY JSON RESPONSE 
+        print UTCtoEST() +' :: Response Empty! - Problem Adding to Cart\nExiting...'  #CHECK THIS - DID ITEM ADD TO CART? MAKE POST AGAIN
         print
         sys.exit()
     print UTCtoEST() +' :: '+str(cw)+' - '+addResp.json()[0]['name']+' - '+ addResp.json()[0]['size_name']+' added to cart!'
@@ -174,5 +181,5 @@ else:
     print checkoutResp.json()
     if checkoutResp.json()['status']=='failed':
         print
-        print '!!!ERROR!!! ::',checkoutResp.json()['errors']
+        print '!!!ERROR!!! ::',checkoutResp.json()['errors'] #CHECK THIS DATA STRUCT FOR KEY
     print
