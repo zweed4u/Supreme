@@ -50,6 +50,9 @@ def supremeItemBuy(keyword, poll, color, sz, qty, ghostCheckoutPrevention):
         global ID
         global variant
         global cw
+        global styleNum
+        global myproduct
+        global sizeName
         req = urllib2.Request('http://www.supremenewyork.com/mobile_stock.json')
         req.add_header('User-Agent', "User-Agent','Mozilla/5.0 (iPhone; CPU iPhone OS 6_1_4 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10B350 Safari/8536.25")
         resp = urllib2.urlopen(req)
@@ -85,12 +88,14 @@ def supremeItemBuy(keyword, poll, color, sz, qty, ghostCheckoutPrevention):
                 # COLORWAY TERMS HERE
                 # if string1 in numCW['name'] or string2 in numCW['name']:
                 if color in numCW['name'].title():
+                    styleNum=numCW['id']
                     for sizes in numCW['sizes']:
                         # SIZE TERMS HERE
                         if str(sizes['name'].title()) == sz: # Medium
                             found=1;
                             variant=str(sizes['id'])
                             cw=numCW['name']
+                            sizeName=sizes['name']
                             print UTCtoEST(),':: Selecting size:', sizes['name'],'(',numCW['name'],')','(',str(sizes['id']),')'
             if found ==0:
                 # DEFAULT CASE NEEDED HERE - EITHER COLORWAY NOT FOUND OR SIZE NOT IN RUN OF PRODUCT
@@ -99,6 +104,7 @@ def supremeItemBuy(keyword, poll, color, sz, qty, ghostCheckoutPrevention):
                 sizeName=str(data['styles'][0]['sizes'][len(data['styles'][0]['sizes'])-1]['name'])
                 variant=str(data['styles'][0]['sizes'][len(data['styles'][0]['sizes'])-1]['id'])
                 cw=data['styles'][0]['name']
+                styleNum=data['styles'][0]['id']
                 print UTCtoEST(),':: Selecting default size:',sizeName,'(',variant,')'
     main()
 
@@ -118,6 +124,7 @@ def supremeItemBuy(keyword, poll, color, sz, qty, ghostCheckoutPrevention):
         'Referer':           'http://www.supremenewyork.com/mobile'   
     }
     addPayload={
+        'style' : str(styleNum)
         'size': str(variant),
         'qty':  qty
     }
@@ -127,15 +134,17 @@ def supremeItemBuy(keyword, poll, color, sz, qty, ghostCheckoutPrevention):
     print UTCtoEST() +' :: Checking status code of response...'
 
     if addResp.status_code!=200:
-        print UTCtoEST() +' ::',addResp.status_code,'Error \nExiting...'
+        print UTCtoEST() +' ::',addResp.status_code,'Error \nExiting...' #CHECK THIS - DID ITEM ADD TO CART? MAKE POST AGAIN - something like while status != 200 - wait and request again
         print
         sys.exit()
     else:
-        if addResp.json()==[]:
-            print UTCtoEST() +' :: Response Empty! - Problem Adding to Cart\nExiting...'
+        if addResp.json()==[]: #FIGURE OUT WHY EMPTY JSON RESPONSE 
+            print UTCtoEST() +' :: Response Empty! - Problem Adding to Cart\nExiting...'  #CHECK THIS - DID ITEM ADD TO CART? MAKE POST AGAIN
             print
             sys.exit()
-        print UTCtoEST() +' :: '+str(cw)+' - '+addResp.json()[0]['name']+' - '+ addResp.json()[0]['size_name']+' added to cart!'
+        assert addResp.json()[0]["in_stock"]==True,"Error Message: Not in stock"
+        assert addResp.json()[0]["size_id"]==str(variant),"Error Message: Incorrect variant returned in response"
+        print UTCtoEST() +' :: '+str(myproduct)+' - '+str(cw)+' - '+str(sizeName)+' added to cart!'
         
         checkoutUrl='https://www.supremenewyork.com/checkout.json'
         checkoutHeaders={
