@@ -144,7 +144,7 @@ else:
     # FILL OUT THESE FIELDS AS NEEDED
     #################################
     checkoutPayload={
-        'store_credit_id':    '',      
+        'store_credit_id':          '',      
         'from_mobile':              '1',
         'cookie-sub':               '%7B%22'+str(variant)+'%22%3A1%7D',       # cookie-sub: eg. {"VARIANT":1} urlencoded
         'same_as_billing_address':  '1',                                    
@@ -158,14 +158,30 @@ else:
         'order[billing_state]':     'CA',                                     # state
         'order[billing_country]':   'USA',                                    # country
         'store_address':            '1',                                
-        'credit_card[type]':        'visa',                                   # master or visa
+        'credit_card[type]':        'visa',                                   # master or visa or 
         'credit_card[cnb]':         '9999 9999 9999 9999',                    # credit card number
         'credit_card[month]':       '01',                                     # expiration month
         'credit_card[year]':        '2026',                                   # expiration year
         'credit_card[vval]':        '123',                                    # cvc/cvv
         'order[terms]':             '0',
-        'order[terms]':             '1'                
+        #'g-recaptcha-response':     captchaResponse,                         Could integrate harvestor with below information                       
+        'is_from_ios_native':       1
+                
     }
+    '''
+    captchaResponse post here  https://www.google.com/recaptcha/api2/userverify?k=6LeWwRkUAAAAAOBsau7KpuC9AV-6J8mhw4AjC3Xz 
+    {
+        v:
+        c:
+        response:
+        t:
+        ct:
+        bg:
+    }
+
+    reponse "uvresp",captchaResponse string
+    '''
+
 
     # GHOST CHECKOUT PREVENTION WITH ROLLING PRINT
     for i in range(5):
