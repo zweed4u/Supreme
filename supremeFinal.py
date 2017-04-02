@@ -164,12 +164,12 @@ else:
         'credit_card[year]':        '2026',                                   # expiration year
         'credit_card[vval]':        '123',                                    # cvc/cvv
         'order[terms]':             '0',
-        #'g-recaptcha-response':     captchaResponse,                         Could integrate harvestor with below information                       
-        'is_from_ios_native':       1
+        #'g-recaptcha-response':     captchaResponse,                         Could integrate harvestor with below information
+        'is_from_ios_native':       '1'
                 
     }
     '''
-    captchaResponse post here  https://www.google.com/recaptcha/api2/userverify?k=6LeWwRkUAAAAAOBsau7KpuC9AV-6J8mhw4AjC3Xz 
+    captchaResponse post here  https://www.google.com/recaptcha/api2/userverify?k=6LeWwRkUAAAAAOBsau7KpuC9AV-6J8mhw4AjC3Xz
     {
         v:
         c:
