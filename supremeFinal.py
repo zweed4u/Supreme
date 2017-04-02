@@ -185,8 +185,22 @@ def supremeItemBuy(keyword, poll, color, sz, qty, ghostCheckoutPrevention):
             'credit_card[year]':        user_config.cardYear,
             'credit_card[vval]':        user_config.cardCVV,
             'order[terms]':             '0',
-            'order[terms]':             '1'
+            #'g-recaptcha-response':     captchaResponse,                         Could integrate harvestor with below information
+            'is_from_ios_native':       '1'
         }
+        '''
+        captchaResponse post here  https://www.google.com/recaptcha/api2/userverify?k=6LeWwRkUAAAAAOBsau7KpuC9AV-6J8mhw4AjC3Xz
+        {
+            v:
+            c:
+            response:
+            t:
+            ct:
+            bg:
+        }
+
+        reponse "uvresp",captchaResponse string
+        '''
 
         # GHOST CHECKOUT PREVENTION WITH ROLLING PRINT
         for countDown in range(ghostCheckoutPrevention):
