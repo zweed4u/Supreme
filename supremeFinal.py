@@ -164,6 +164,7 @@ def supremeItemBuy(keyword, poll, color, sz, qty, ghostCheckoutPrevention):
         ###########################################
         # FILL OUT THESE FIELDS AS NEEDED IN CONFIG
         ###########################################
+        captchaResponse=''
         checkoutPayload={
             'store_credit_id':          '',      
             'from_mobile':              '1',
@@ -185,7 +186,7 @@ def supremeItemBuy(keyword, poll, color, sz, qty, ghostCheckoutPrevention):
             'credit_card[year]':        user_config.cardYear,
             'credit_card[vval]':        user_config.cardCVV,
             'order[terms]':             '0',
-            #'g-recaptcha-response':     captchaResponse,                         Could integrate harvestor with below information
+            'g-recaptcha-response':     captchaResponse,                         #Could integrate harvestor with below information
             'is_from_ios_native':       '1'
         }
         '''
