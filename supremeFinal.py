@@ -143,6 +143,7 @@ else:
     #################################
     # FILL OUT THESE FIELDS AS NEEDED
     #################################
+    captchaResponse=''
     checkoutPayload={
         'store_credit_id':          '',      
         'from_mobile':              '1',
@@ -164,7 +165,7 @@ else:
         'credit_card[year]':        '2026',                                   # expiration year
         'credit_card[vval]':        '123',                                    # cvc/cvv
         'order[terms]':             '0',
-        #'g-recaptcha-response':     captchaResponse,                         Could integrate harvestor with below information
+        'g-recaptcha-response':     captchaResponse,                         #Could integrate harvestor with below information
         'is_from_ios_native':       '1'
                 
     }
