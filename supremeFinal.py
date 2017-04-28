@@ -46,7 +46,7 @@ print
 print UTCtoEST(),':: Parsing page...'
 def supremeItemBuy(keyword, poll, color, sz, qty, ghostCheckoutPrevention):
     #while loop start here... (parameterize with different combinations of items/sizes/colors)
-    def main():
+    def pollStock(keyword,poll,color,sz,qty):
         global ID
         global variant
         global cw
@@ -75,7 +75,7 @@ def supremeItemBuy(keyword, poll, color, sz, qty, ghostCheckoutPrevention):
             # variant flag unchanged - nothing found - rerun
             time.sleep(poll)
             print UTCtoEST(),':: Reloading and reparsing page...'
-            main()
+            pollStock(keyword,poll,color,sz,qty)
         else:
             print UTCtoEST(),':: Selecting',str(myproduct),'(',str(ID),')'
             jsonurl = 'http://www.supremenewyork.com/shop/'+str(ID)+'.json'
@@ -106,7 +106,7 @@ def supremeItemBuy(keyword, poll, color, sz, qty, ghostCheckoutPrevention):
                 cw=data['styles'][0]['name']
                 styleNum=data['styles'][0]['id']
                 print UTCtoEST(),':: Selecting default size:',sizeName,'(',variant,')'
-    main()
+    pollStock(keyword,poll,color,sz,qty)
 
     session=requests.Session()
     addUrl='http://www.supremenewyork.com/shop/'+str(ID)+'/add.json'
