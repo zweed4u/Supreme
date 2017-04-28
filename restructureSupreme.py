@@ -2,7 +2,6 @@
 import os, sys, json, time, requests, urllib2, threading, ConfigParser, types, functools
 
 global mobileStockJson
-funcThreadNames=[]
 rootDirectory = os.getcwd()
 c = ConfigParser.ConfigParser()
 configFilePath = os.path.join(rootDirectory, 'config.cfg')
@@ -34,6 +33,7 @@ def copy_func(f):
     return g
 
 def productThread(name, size, color, qty):
+    #include sleep and found flag to break in main
     a=3
     if 'Rigid' in name:
         a=0
@@ -56,3 +56,18 @@ if __name__ == '__main__':
         t = threading.Thread(target=myThreadFunc, args=(itemName, itemSize, itemColor, itemQty,))
         #t = threading.Thread(target=exec(myThreadFunc), args=(itemName, user_config.poll, itemColor, itemSize, itemQty, user_config.ghostCheckoutPrevention,))
         t.start()
+    mobileStockPollSession = requests.session()
+    headers = {
+        'Host':              'www.supremenewyork.com',
+        'Accept-Encoding':   'gzip, deflate',
+        'Connection':        'keep-alive',
+        'Proxy-Connection':  'keep-alive',
+        'Accept':            'application/json',
+        'User-Agent':        'Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_3 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Mobile/13G34',
+        'Referer':           'http://www.supremenewyork.com/mobile',
+        'Accept-Language':   'en-us',
+        'X-Requested-With':  'XMLHttpRequest'
+    }
+    while 1:
+        mobileStockJson = mobileStockPollSession.get('http://www.supremenewyork.com/mobile_stock.json', headers=headers).json()
+        sleep(poll)
