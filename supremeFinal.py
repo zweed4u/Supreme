@@ -215,9 +215,9 @@ def supremeItemBuy(keyword, poll, color, sz, qty, ghostCheckoutPrevention):
 if __name__ == '__main__':
     assert len(c.options('productName'))==len(c.options('productSize'))==len(c.options('productColor'))==len(c.options('productQty')),'Assertion Error: Product section lengths unmatched'
     for enumerableItem in range(0, len(c.options('productName'))):
-        itemName=c.get('productName',c.options('productName')[enumerableItem])
-        itemSize=c.get('productSize',c.options('productSize')[enumerableItem])
-        itemColor=c.get('productColor',c.options('productColor')[enumerableItem])
+        itemName=c.get('productName',c.options('productName')[enumerableItem]).title()
+        itemSize=c.get('productSize',c.options('productSize')[enumerableItem]).title()
+        itemColor=c.get('productColor',c.options('productColor')[enumerableItem]).title()
         itemQty=c.get('productQty',c.options('productQty')[enumerableItem])
         print itemName, itemSize, itemColor, itemQty,'Thread initialized!'
         print
