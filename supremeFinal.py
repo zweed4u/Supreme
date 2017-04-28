@@ -122,8 +122,8 @@ else:
         print UTCtoEST() +' :: Response Empty! - Problem Adding to Cart\nExiting...'  #CHECK THIS - DID ITEM ADD TO CART? MAKE POST AGAIN
         print
         sys.exit()
-    assert addResp.json()[0]["in_stock"]==True,"Error Message: Not in stock"
-    assert addResp.json()[0]["size_id"]==str(variant),"Error Message: Incorrect variant returned in response"
+    #assert addResp.json()[0]["in_stock"]==True,"Error Message: Not in stock"
+    #assert addResp.json()[0]["size_id"]==str(variant),"Error Message: Incorrect variant returned in response"
     print UTCtoEST() +' :: '+str(myproduct)+' - '+str(cw)+' - '+str(sizeName)+' added to cart!'
 
     checkoutUrl='https://www.supremenewyork.com/checkout.json'
