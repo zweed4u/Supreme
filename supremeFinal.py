@@ -30,7 +30,7 @@ def main():
     global myproduct
     global sizeName
     req = urllib2.Request('http://www.supremenewyork.com/mobile_stock.json')
-    req.add_header('User-Agent', "User-Agent','Mozilla/5.0 (iPhone; CPU iPhone OS 6_1_4 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10B350 Safari/8536.25")
+    req.add_header('User-Agent', "Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_3 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Mobile/13G34")
     resp = urllib2.urlopen(req)
     data = json.loads(resp.read())
     ID=0
@@ -44,7 +44,7 @@ def main():
                 # match/(es) detected!
                 # can return multiple matches but you're 
                 # probably buying for resell so it doesn't matter
-                myproduct=name                
+                myproduct=name
                 ID=str(item[u'id'])
                 print UTCtoEST(),'::',name, ID, 'found ( MATCHING ITEM DETECTED )'
     if (ID == 0):
@@ -56,7 +56,7 @@ def main():
         print UTCtoEST(),':: Selecting',str(myproduct),'(',str(ID),')'
         jsonurl = 'http://www.supremenewyork.com/shop/'+str(ID)+'.json'
         req = urllib2.Request(jsonurl)
-        req.add_header('User-Agent', "User-Agent','Mozilla/5.0 (iPhone; CPU iPhone OS 6_1_4 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10B350 Safari/8536.25")
+        req.add_header('User-Agent', "Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_3 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Mobile/13G34")
         resp = urllib2.urlopen(req)
         data = json.loads(resp.read())
         found=0
@@ -67,13 +67,14 @@ def main():
                 styleNum=numCW['id']
                 for sizes in numCW['sizes']:
                     # SIZE TERMS HERE
-                    if str(sizes['name'].title()) == sz: # Medium
+                    if sz in str(sizes['name'].title()): # Medium
                         found=1;
                         variant=str(sizes['id'])
                         cw=numCW['name']
                         sizeName=sizes['name']
                         print UTCtoEST(),':: Selecting size:', sizes['name'],'(',numCW['name'],')','(',str(sizes['id']),')'
-                        
+                        break
+
         if found ==0:
             # DEFAULT CASE NEEDED HERE - EITHER COLORWAY NOT FOUND OR SIZE NOT IN RUN OF PRODUCT
             # PICKING FIRST COLORWAY AND LAST SIZE OPTION
@@ -89,17 +90,17 @@ main()
 session=requests.Session()
 addUrl='http://www.supremenewyork.com/shop/'+str(ID)+'/add.json'
 addHeaders={
-    'Host':              'www.supremenewyork.com',                                                                                                                     
-    'Accept':            'application/json',                                                                                                                             
-    'Proxy-Connection':  'keep-alive',                                                                                                                                   
-    'X-Requested-With':  'XMLHttpRequest',                                                                                                                               
-    'Accept-Encoding':   'gzip, deflate',                                                                                                                                
-    'Accept-Language':   'en-us',                                                                                                                                        
-    'Content-Type':      'application/x-www-form-urlencoded',                                                                                                            
-    'Origin':            'http://www.supremenewyork.com',                                                                                                                
-    'Connection':        'keep-alive',                                                                                                                                   
-    'User-Agent':        'Mozilla/5.0 (iPhone; CPU iPhone OS 7_1_2 like Mac OS X) AppleWebKit/537.51.2 (KHTML, like Gecko) Mobile/11D257',                               
-    'Referer':           'http://www.supremenewyork.com/mobile'   
+    'Host':              'www.supremenewyork.com',
+    'Accept':            'application/json',
+    'Proxy-Connection':  'keep-alive',
+    'X-Requested-With':  'XMLHttpRequest',
+    'Accept-Encoding':   'gzip, deflate',
+    'Accept-Language':   'en-us',
+    'Content-Type':      'application/x-www-form-urlencoded',
+    'Origin':            'http://www.supremenewyork.com',
+    'Connection':        'keep-alive',
+    'User-Agent':        'Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_3 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Mobile/13G34',
+    'Referer':           'http://www.supremenewyork.com/mobile'
 }
 
 addPayload={
@@ -117,27 +118,26 @@ if addResp.status_code!=200:
     print
     sys.exit()
 else:
-    if addResp.json()==[]: #FIGURE OUT WHY EMPTY JSON RESPONSE 
+    if addResp.json()==[]: #FIGURE OUT WHY EMPTY JSON RESPONSE
         print UTCtoEST() +' :: Response Empty! - Problem Adding to Cart\nExiting...'  #CHECK THIS - DID ITEM ADD TO CART? MAKE POST AGAIN
         print
         sys.exit()
     assert addResp.json()[0]["in_stock"]==True,"Error Message: Not in stock"
     assert addResp.json()[0]["size_id"]==str(variant),"Error Message: Incorrect variant returned in response"
     print UTCtoEST() +' :: '+str(myproduct)+' - '+str(cw)+' - '+str(sizeName)+' added to cart!'
-    
+
     checkoutUrl='https://www.supremenewyork.com/checkout.json'
     checkoutHeaders={
-        'host':              'www.supremenewyork.com',
-        'If-None-Match':    '"*"',
-        'Accept':            'application/json',                                                                                                                             
-        'Proxy-Connection':  'keep-alive',                                                                                                                                   
-        'Accept-Encoding':   'gzip, deflate',                                                                                                                                
-        'Accept-Language':   'en-us',                                                                                                                                        
-        'Content-Type':      'application/x-www-form-urlencoded',                                                                                                            
-        'Origin':            'http://www.supremenewyork.com',                                                                                                                
-        'Connection':        'keep-alive',                                                                                                                                   
-        'User-Agent':        'Mozilla/5.0 (iPhone; CPU iPhone OS 7_1_2 like Mac OS X) AppleWebKit/537.51.2 (KHTML, like Gecko) Mobile/11D257',                               
-        'Referer':           'http://www.supremenewyork.com/mobile'   
+        'Host':              'www.supremenewyork.com',
+        'Accept':            'application/json',
+        'Proxy-Connection':  'keep-alive',
+        'Accept-Language':   'en-us',
+        'Accept-Encoding':   'gzip, deflate',
+        'Content-Type':      'application/x-www-form-urlencoded',
+        'Origin':            'http://www.supremenewyork.com',
+        'Connection':        'keep-alive',
+        'User-Agent':        'Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_3 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Mobile/13G34',
+        'Referer':           'http://www.supremenewyork.com/mobile'
     }
 
     #################################
@@ -145,51 +145,39 @@ else:
     #################################
     captchaResponse=''
     checkoutPayload={
-        'store_credit_id':          '',      
+        'store_credit_id':          '',
         'from_mobile':              '1',
-        'cookie-sub':               '%7B%22'+str(variant)+'%22%3A1%7D',       # cookie-sub: eg. {"VARIANT":1} urlencoded
-        'same_as_billing_address':  '1',                                    
-        'order[billing_name]':      'anon mous',                              # FirstName LastName
-        'order[email]':             'anon@mailinator.com',                    # email@domain.com
-        'order[tel]':               '999-999-9999',                           # phone-number-here
-        'order[billing_address]':   '123 Seurat lane',                        # your address
+        'cookie-sub':               '%7B%22'+str(variant)+'%22%3A1%7D',
+        'same_as_billing_address':  '1',
+        'order[billing_name]':      'anon mous',
+        'order[email]':             'anon@mailinator.com',
+        'order[tel]':               '999-999-9999',
+        'order[billing_address]':   '123 Seurat lane',
         'order[billing_address_2]': '',
-        'order[billing_zip]':       '90210',                                  # zip code
-        'order[billing_city]':      'Beverly Hills',                          # city
-        'order[billing_state]':     'CA',                                     # state
-        'order[billing_country]':   'USA',                                    # country
-        'store_address':            '1',                                
-        'credit_card[type]':        'visa',                                   # master or visa or 
-        'credit_card[cnb]':         '9999 9999 9999 9999',                    # credit card number
-        'credit_card[month]':       '01',                                     # expiration month
-        'credit_card[year]':        '2026',                                   # expiration year
-        'credit_card[vval]':        '123',                                    # cvc/cvv
+        'order[billing_zip]':       '90210',
+        'order[billing_city]':      'Beverly Hills',
+        'order[billing_state]':     'CA',
+        'order[billing_country]':   'USA',
+        'store_address':            '1',
+        'credit_card[type]':        'visa',
+        'credit_card[cnb]':         '4117 9999 9999 9999',
+        'credit_card[month]':       '01',
+        'credit_card[year]':        '2026',
+        'credit_card[vval]':        '123',
         'order[terms]':             '0',
-        'g-recaptcha-response':     captchaResponse,                         #Could integrate harvestor with below information
+        'order[terms]':             '1',
+        'g-recaptcha-response':     captchaResponse,
         'is_from_ios_native':       '1'
-                
-    }
-    '''
-    captchaResponse post here  https://www.google.com/recaptcha/api2/userverify?k=6LeWwRkUAAAAAOBsau7KpuC9AV-6J8mhw4AjC3Xz
-    {
-        v:
-        c:
-        response:
-        t:
-        ct:
-        bg:
     }
 
-    reponse "uvresp",captchaResponse string
-    '''
-
+    #captchaResponse post here  https://www.google.com/recaptcha/api2/userverify?k=6LeWwRkUAAAAAOBsau7KpuC9AV-6J8mhw4AjC3Xz
 
     # GHOST CHECKOUT PREVENTION WITH ROLLING PRINT
     for i in range(5):
             sys.stdout.write("\r" +UTCtoEST()+ ' :: Sleeping for '+str(5-i)+' seconds to avoid ghost checkout...')
             sys.stdout.flush()
             time.sleep(1)
-    print 
+    print
     print UTCtoEST()+ ' :: Firing checkout request!'
     checkoutResp=session.post(checkoutUrl,data=checkoutPayload,headers=checkoutHeaders)
     try:
@@ -197,7 +185,7 @@ else:
     except:
         print UTCtoEST()+':: Error reading status key of response!'
         print checkoutResp.json()
-    print 
+    print
     print checkoutResp.json()
     if checkoutResp.json()['status']=='failed':
         print
