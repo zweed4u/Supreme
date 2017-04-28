@@ -19,8 +19,7 @@ c.read(configFilePath)
 
 class Config:
     poll=int(c.get('timeComponents','poll'))
-    ghostCheckoutPrevention=c.get('timeComponents','ghostCheckoutPrevention')
-
+    ghostCheckoutPrevention=int(c.get('timeComponents','ghostCheckoutPrevention'))
     billingName=c.get('cardInfo','firstAndLast')
     email=c.get('cardInfo','email')
     phone=c.get('cardInfo','phone')
@@ -142,8 +141,8 @@ def supremeItemBuy(keyword, poll, color, sz, qty, ghostCheckoutPrevention):
             print UTCtoEST() +' :: Response Empty! - Problem Adding to Cart\nExiting...'  #CHECK THIS - DID ITEM ADD TO CART? MAKE POST AGAIN
             print
             sys.exit()
-        assert addResp.json()[0]["in_stock"]==True,"Error Message: Not in stock"
-        assert addResp.json()[0]["size_id"]==str(variant),"Error Message: Incorrect variant returned in response"
+        #assert addResp.json()[0]["in_stock"]==True,"Error Message: Not in stock"
+        #assert addResp.json()[0]["size_id"]==str(variant),"Error Message: Incorrect variant returned in response"
         print UTCtoEST() +' :: '+str(myproduct)+' - '+str(cw)+' - '+str(sizeName)+' added to cart!'
         
         checkoutUrl='https://www.supremenewyork.com/checkout.json'
