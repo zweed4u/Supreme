@@ -70,4 +70,4 @@ if __name__ == '__main__':
     }
     while 1:
         mobileStockJson = mobileStockPollSession.get('http://www.supremenewyork.com/mobile_stock.json', headers=headers).json()
-        sleep(poll)
+        time.sleep(user_config.poll)
