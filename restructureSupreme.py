@@ -2,6 +2,7 @@
 import os, sys, json, time, requests, urllib2, threading, ConfigParser, types, functools
 
 global mobileStockJson
+global stopPoll
 rootDirectory = os.getcwd()
 c = ConfigParser.ConfigParser()
 configFilePath = os.path.join(rootDirectory, 'config.cfg')
@@ -33,15 +34,32 @@ def copy_func(f):
     return g
 
 def productThread(name, size, color, qty):
-    #include sleep and found flag to break in main
-    a=3
-    if 'Rigid' in name:
-        a=0
-    print name, size, color, qty, a
-    print
+    #include sleep and found flag to break in main - try catch fo NULL init handling
+    while 1:
+        while not(mobileStockJson):
+            pass
+        for category in range(0, len(mobileStockJson['products_and_categories'].values())):
+            for item in range(0, len(mobileStockJson['products_and_categories'].values()[category])):
+                #print mobileStockJson['products_and_categories'].values()[category][item]['name']
+                if name in mobileStockJson['products_and_categories'].values()[category][item]['name']:
+                    #Retain useful info here like index but mostly the id for add request
+                    stopPoll=1
+                    listedProductName=mobileStockJson['products_and_categories'].values()[category][item]['name']
+                    productID=mobileStockJson['products_and_categories'].values()[category][item]['id']
+                    print
+                    print "Item found! :: ",listedProductName,productID
+                    print
+        if (stopPoll!=1): 
+            print "Item not found :: ",name
+            time.sleep(user_config.poll)
+        else:
+            #Item found continue to add and checkout
+            break
+
 
 if __name__ == '__main__':
     mobileStockJson=None
+    stopPoll=0
     user_config = Config()
     assert len(c.options('productName'))==len(c.options('productSize'))==len(c.options('productColor'))==len(c.options('productQty')),'Assertion Error: Product section lengths unmatched'
     for enumerableItem in range(0, len(c.options('productName'))):
@@ -56,6 +74,7 @@ if __name__ == '__main__':
         t = threading.Thread(target=myThreadFunc, args=(itemName, itemSize, itemColor, itemQty,))
         #t = threading.Thread(target=exec(myThreadFunc), args=(itemName, user_config.poll, itemColor, itemSize, itemQty, user_config.ghostCheckoutPrevention,))
         t.start()
+
     mobileStockPollSession = requests.session()
     headers = {
         'Host':              'www.supremenewyork.com',
@@ -68,6 +87,11 @@ if __name__ == '__main__':
         'Accept-Language':   'en-us',
         'X-Requested-With':  'XMLHttpRequest'
     }
+
     while 1:
-        mobileStockJson = mobileStockPollSession.get('http://www.supremenewyork.com/mobile_stock.json', headers=headers).json()
-        time.sleep(user_config.poll)
+        if (stopPoll!=1):
+            mobileStockJson = mobileStockPollSession.get('http://www.supremenewyork.com/mobile_stock.json', headers=headers).json()
+            time.sleep(user_config.poll)
+        else:
+            #Item/s found! wait for thread completion
+            pass 
