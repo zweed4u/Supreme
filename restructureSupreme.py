@@ -1,8 +1,10 @@
 #!/usr/bin/python
 import os, sys, json, time, requests, urllib2, threading, ConfigParser, types, functools
+from datetime import datetime
 
-global mobileStockJson
 global stopPoll
+global mobileStockJson
+
 rootDirectory = os.getcwd()
 c = ConfigParser.ConfigParser()
 configFilePath = os.path.join(rootDirectory, 'config.cfg')
@@ -26,6 +28,10 @@ class Config:
     cardYear=c.get('cardInfo','cardYear')
     cardCVV=c.get('cardInfo','cardCVV')
 
+def UTCtoEST():
+    current=datetime.now()
+    return str(current) + ' EST'
+
 def copy_func(f):
     g = types.FunctionType(f.func_code, f.func_globals, name=f.func_name,
                            argdefs=f.func_defaults,
@@ -43,23 +49,27 @@ def productThread(name, size, color, qty):
                 #print mobileStockJson['products_and_categories'].values()[category][item]['name']
                 if name in mobileStockJson['products_and_categories'].values()[category][item]['name']:
                     #Retain useful info here like index but mostly the id for add request
-                    stopPoll=1
-                    listedProductName=mobileStockJson['products_and_categories'].values()[category][item]['name']
-                    productID=mobileStockJson['products_and_categories'].values()[category][item]['id']
+                    stopPoll = 1
+                    listedProductName = mobileStockJson['products_and_categories'].values()[category][item]['name']
+                    productID = mobileStockJson['products_and_categories'].values()[category][item]['id']
                     print
-                    print "Item found! :: ",listedProductName,productID
+                    print UTCtoEST(),'::',listedProductName, productID, 'found ( MATCHING ITEM DETECTED )'
                     print
         if (stopPoll!=1): 
-            print "Item not found :: ",name
+            print UTCtoEST(),':: Reloading and reparsing page...'
             time.sleep(user_config.poll)
         else:
             #Item found continue to add and checkout
+            atcSession = requests.session()
+            print UTCtoEST(),':: Selecting',listedProductName,'(',productID,')'
+            productItemData = atcSession.get('http://www.supremenewyork.com/shop/'+str(productID)+'.json',headers={'User-Agent':'Mozilla/5.0 (iPhone; CPU iPhone OS 7_1_2 like Mac OS X) AppleWebKit/537.51.2 (KHTML, like Gecko) Mobile/11D257'}).json()
+            print productItemData
             break
 
 
 if __name__ == '__main__':
-    mobileStockJson=None
     stopPoll=0
+    mobileStockJson=None
     user_config = Config()
     assert len(c.options('productName'))==len(c.options('productSize'))==len(c.options('productColor'))==len(c.options('productQty')),'Assertion Error: Product section lengths unmatched'
     for enumerableItem in range(0, len(c.options('productName'))):
