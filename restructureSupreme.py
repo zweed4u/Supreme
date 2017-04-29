@@ -13,7 +13,6 @@ c.read(configFilePath)
 class Config:
     poll=int(c.get('timeComponents','poll'))
     ghostCheckoutPrevention=c.get('timeComponents','ghostCheckoutPrevention')
-
     billingName=c.get('cardInfo','firstAndLast')
     email=c.get('cardInfo','email')
     phone=c.get('cardInfo','phone')
@@ -55,23 +54,33 @@ def productThread(name, size, color, qty):
                     print
                     print UTCtoEST(),'::',listedProductName, productID, 'found ( MATCHING ITEM DETECTED )'
                     print
-        if (stopPoll!=1): 
+        if (stopPoll != 1): 
             print UTCtoEST(),':: Reloading and reparsing page...'
             time.sleep(user_config.poll)
         else:
             #Item found continue to add and checkout
+            foundItemColor = 0
+            foundItemSize = 0
             atcSession = requests.session()
             print UTCtoEST(),':: Selecting',listedProductName,'(',productID,')'
             productItemData = atcSession.get('http://www.supremenewyork.com/shop/'+str(productID)+'.json',headers={'User-Agent':'Mozilla/5.0 (iPhone; CPU iPhone OS 7_1_2 like Mac OS X) AppleWebKit/537.51.2 (KHTML, like Gecko) Mobile/11D257'}).json()
-            print productItemData
+            for listedProductColors in productItemData['styles']:
+                if color in listedProductColors['name']:
+                    foundItemColor = 1
+                    colorProductId = listedProductColors['id']
+                    for listedProductSizes in listedProductColors['sizes']:
+                        if size in listedProductSizes['name']:
+                            foundItemSize = 1
+                            sizeProductId = listedProductSizes['id']
+                            break
+            print UTCtoEST(),':: Selecting size:', size,'(',color,')','(',sizeProductId,')'
             break
 
-
 if __name__ == '__main__':
-    stopPoll=0
-    mobileStockJson=None
+    stopPoll = 0
+    mobileStockJson = None
     user_config = Config()
-    assert len(c.options('productName'))==len(c.options('productSize'))==len(c.options('productColor'))==len(c.options('productQty')),'Assertion Error: Product section lengths unmatched'
+    assert len(c.options('productName')) == len(c.options('productSize')) == len(c.options('productColor')) == len(c.options('productQty')),'Assertion Error: Product section lengths unmatched'
     for enumerableItem in range(0, len(c.options('productName'))):
         itemName = c.get('productName',c.options('productName')[enumerableItem]).title()
         itemSize = c.get('productSize',c.options('productSize')[enumerableItem]).title()
@@ -99,7 +108,7 @@ if __name__ == '__main__':
     }
 
     while 1:
-        if (stopPoll!=1):
+        if (stopPoll != 1):
             mobileStockJson = mobileStockPollSession.get('http://www.supremenewyork.com/mobile_stock.json', headers=headers).json()
             time.sleep(user_config.poll)
         else:
