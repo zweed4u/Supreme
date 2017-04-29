@@ -72,8 +72,16 @@ def productThread(name, size, color, qty):
                         if size in listedProductSizes['name']:
                             foundItemSize = 1
                             sizeProductId = listedProductSizes['id']
+                            print UTCtoEST(),':: Selecting size:', size,'(',color,')','(',sizeProductId,')'
                             break
-            print UTCtoEST(),':: Selecting size:', size,'(',color,')','(',sizeProductId,')'
+            if (foundItemColor == 0 or foundItemSize == 0):
+                #couldn't find user desired selection of color and size. picking defaults
+                print UTCtoEST(),':: Selecting default colorway:',productItemData['styles'][0]['name']
+                selectedDefaultSize = str(productItemData['styles'][0]['sizes'][len(productItemData['styles'][0]['sizes'])-1]['name'])
+                sizeProductId = str(productItemData['styles'][0]['sizes'][len(productItemData['styles'][0]['sizes'])-1]['id'])
+                selectedDefaultColor = productItemData['styles'][0]['name']
+                colorProductId = productItemData['styles'][0]['id']
+                print UTCtoEST(),':: Selecting default size:',sizeName,'(',variant,')'
             break
 
 if __name__ == '__main__':
