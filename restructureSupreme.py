@@ -62,21 +62,23 @@ def productThread(name, size, color, qty):
             for listedProductColors in productItemData['styles']:
                 if color in listedProductColors['name']:
                     foundItemColor = 1
+                    selectedColor = color
                     colorProductId = listedProductColors['id']
                     for listedProductSizes in listedProductColors['sizes']:
                         if size in listedProductSizes['name']:
                             foundItemSize = 1
+                            selectedSize = size
                             sizeProductId = listedProductSizes['id']
-                            print UTCtoEST(),':: Selecting size:', size,'(',color,')','(',sizeProductId,')'
+                            print UTCtoEST(),':: Selecting size:', selectedSize,'(',selectedColor,')','(',sizeProductId,')'
                             break
             if (foundItemColor == 0 or foundItemSize == 0):
                 #couldn't find user desired selection of color and size. picking defaults
                 print UTCtoEST(),':: Selecting default colorway:',productItemData['styles'][0]['name']
-                selectedDefaultSize = str(productItemData['styles'][0]['sizes'][len(productItemData['styles'][0]['sizes'])-1]['name'])
+                selectedSize = str(productItemData['styles'][0]['sizes'][len(productItemData['styles'][0]['sizes'])-1]['name'])
                 sizeProductId = str(productItemData['styles'][0]['sizes'][len(productItemData['styles'][0]['sizes'])-1]['id'])
-                selectedDefaultColor = productItemData['styles'][0]['name']
+                selectedColor = productItemData['styles'][0]['name']
                 colorProductId = productItemData['styles'][0]['id']
-                print UTCtoEST(),':: Selecting default size:',sizeName,'(',variant,')'
+                print UTCtoEST(),':: Selecting default size:', selectedSize,'(',selectedColor,')','(',sizeProductId,')'
 
             productATCSession = requests.session()
             addUrl = 'http://www.supremenewyork.com/shop/'+str(productID)+'/add.json'
@@ -100,12 +102,19 @@ def productThread(name, size, color, qty):
             }
             print UTCtoEST() +' :: Adding product to cart...'
             addResp = productATCSession.post(addUrl,data=addPayload,headers=atcSessionHeaders)
-            #print addResp.json()
-            del atcSessionHeaders['Origin']
-            del atcSessionHeaders['Content-Type']
-            print
-            cart=productATCSession.get('http://www.supremenewyork.com/shop/cart.json',headers=atcSessionHeaders)
-            print cart.json()
+            if addResp.status_code != 200: #DID ITEM ADD TO CART - wait/sleep and make POST again
+                print UTCtoEST() +' ::',addResp.status_code,'Error \nExiting...'
+                print addResp.json()
+                print
+                sys.exit()
+            else:
+                if addResp.json()==[]: #request was OK but did not add item to cart - wait/sleep and make POST again
+                    print UTCtoEST() +' :: Response Empty! - Problem Adding to Cart\nExiting...'  #CHECK THIS - DID ITEM ADD TO CART? MAKE POST AGAIN
+                    print
+                    sys.exit()
+                print UTCtoEST() +' :: [['+listedProductName+' - '+str(selectedColor)+' - '+str(selectedSize)+']] added to cart!'
+
+
             print
             break
 
