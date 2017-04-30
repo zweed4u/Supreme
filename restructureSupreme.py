@@ -80,7 +80,7 @@ def productThread(name, size, color, qty):
 
             productATCSession = requests.session()
             addUrl = 'http://www.supremenewyork.com/shop/'+str(productID)+'/add.json'
-            addHeaders = {
+            atcSessionHeaders = {
                 'Host':              'www.supremenewyork.com',
                 'Accept':            'application/json',
                 'Proxy-Connection':  'keep-alive',
@@ -99,21 +99,12 @@ def productThread(name, size, color, qty):
                 'qty':  qty
             }
             print UTCtoEST() +' :: Adding product to cart...'
-            addResp = productATCSession.post(addUrl,data=addPayload,headers=addHeaders)
+            addResp = productATCSession.post(addUrl,data=addPayload,headers=atcSessionHeaders)
             #print addResp.json()
-            newHeaders={
-                'Host':              'www.supremenewyork.com',
-                'Accept-Encoding':   'gzip, deflate',
-                'Connection':        'keep-alive',
-                'Proxy-Connection':  'keep-alive',
-                'Accept':            'application/json',
-                'User-Agent':        'Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_3 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Mobile/13G34',
-                'Referer':           'http://www.supremenewyork.com/mobile',
-                'Accept-Language':   'en-us',
-                'X-Requested-With':  'XMLHttpRequest'
-            }
+            del atcSessionHeaders['Origin']
+            del atcSessionHeaders['Content-Type']
             print
-            cart=productATCSession.get('http://www.supremenewyork.com/shop/cart.json',headers=newHeaders)
+            cart=productATCSession.get('http://www.supremenewyork.com/shop/cart.json',headers=atcSessionHeaders)
             print cart.json()
             print
             break
