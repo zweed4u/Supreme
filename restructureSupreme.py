@@ -106,8 +106,22 @@ def productThread(name, size, color, qty):
             }
             print UTCtoEST() +' :: Adding product to cart...'
             addResp = productATCSession.post(addUrl,data=addPayload,headers=addHeaders)
-            print addResp.json()
-
+            #print addResp.json()
+            newHeaders={
+                'Host':              'www.supremenewyork.com',
+                'Accept-Encoding':   'gzip, deflate',
+                'Connection':        'keep-alive',
+                'Proxy-Connection':  'keep-alive',
+                'Accept':            'application/json',
+                'User-Agent':        'Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_3 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Mobile/13G34',
+                'Referer':           'http://www.supremenewyork.com/mobile',
+                'Accept-Language':   'en-us',
+                'X-Requested-With':  'XMLHttpRequest'
+            }
+            print
+            cart=productATCSession.get('http://www.supremenewyork.com/shop/cart.json',headers=newHeaders)
+            print cart.json()
+            print
             break
 
 if __name__ == '__main__':
