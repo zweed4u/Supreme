@@ -84,6 +84,29 @@ def productThread(name, size, color, qty):
                 colorProductId = productItemData['styles'][0]['id']
                 print UTCtoEST(),':: Selecting default size:',sizeName,'(',variant,')'
 
+            productATCSession = requests.session()
+            addUrl = 'http://www.supremenewyork.com/shop/'+str(productID)+'/add.json'
+            addHeaders = {
+                'Host':              'www.supremenewyork.com',
+                'Accept':            'application/json',
+                'Proxy-Connection':  'keep-alive',
+                'X-Requested-With':  'XMLHttpRequest',
+                'Accept-Encoding':   'gzip, deflate',
+                'Accept-Language':   'en-us',
+                'Content-Type':      'application/x-www-form-urlencoded',
+                'Origin':            'http://www.supremenewyork.com',
+                'Connection':        'keep-alive',
+                'User-Agent':        'Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_3 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Mobile/13G34',
+                'Referer':           'http://www.supremenewyork.com/mobile'
+            }
+            addPayload = {
+                'style' : str(colorProductId),
+                'size': str(sizeProductId),
+                'qty':  qty
+            }
+            print UTCtoEST() +' :: Adding product to cart...'
+            addResp = productATCSession.post(addUrl,data=addPayload,headers=addHeaders)
+            print addResp.json()
 
             break
 
