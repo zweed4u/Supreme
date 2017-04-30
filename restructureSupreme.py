@@ -1,6 +1,7 @@
 #!/usr/bin/python
-import os, sys, json, time, requests, urllib2, threading, ConfigParser, types, functools
+import os, sys, json, time, requests, urllib2, threading, ConfigParser
 from datetime import datetime
+from functionCreate import copy_func
 
 global stopPoll
 global mobileStockJson
@@ -30,13 +31,6 @@ class Config:
 def UTCtoEST():
     current=datetime.now()
     return str(current) + ' EST'
-
-def copy_func(f):
-    g = types.FunctionType(f.func_code, f.func_globals, name=f.func_name,
-                           argdefs=f.func_defaults,
-                           closure=f.func_closure)
-    g = functools.update_wrapper(g, f)
-    return g
 
 def productThread(name, size, color, qty):
     #include sleep and found flag to break in main - try catch fo NULL init handling
