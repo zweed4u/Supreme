@@ -40,6 +40,7 @@ def copy_func(f):
 
 def productThread(name, size, color, qty):
     #include sleep and found flag to break in main - try catch fo NULL init handling
+    stopPoll = 0
     while 1:
         while not(mobileStockJson):
             pass
@@ -82,6 +83,8 @@ def productThread(name, size, color, qty):
                 selectedDefaultColor = productItemData['styles'][0]['name']
                 colorProductId = productItemData['styles'][0]['id']
                 print UTCtoEST(),':: Selecting default size:',sizeName,'(',variant,')'
+
+
             break
 
 if __name__ == '__main__':
