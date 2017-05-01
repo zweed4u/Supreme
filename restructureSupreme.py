@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import os, sys, json, time, requests, urllib2, random, threading, ConfigParser
+import os, sys, json, time, requests, urllib, random, threading, ConfigParser
 from datetime import datetime
 from functionCreate import copy_func
 from colorCodes import *
@@ -118,7 +118,7 @@ def productThread(name, size, color, qty, textColor, selectedCaptchaToken):
                 checkoutPayload = {
                     'store_credit_id':          '',      
                     'from_mobile':              '1',
-                    'cookie-sub':               '%7B%22'+str(sizeProductId)+'%22%3A1%7D', # cookie-sub: eg. {"VARIANT":1} urlencoded
+                    'cookie-sub':               urllib.quote_plus('{"'+str(sizeProductId)+'":1}'), # cookie-sub: eg. {"VARIANT":1} urlencoded
                     'same_as_billing_address':  '1',
                     'order[billing_name]':      user_config.billingName,
                     'order[email]':             user_config.email,
@@ -147,6 +147,7 @@ def productThread(name, size, color, qty, textColor, selectedCaptchaToken):
                         time.sleep(1)
                 sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST()+' :: Firing checkout request for [['+listedProductName+']]'+'\n')
 
+
             break
 
 if __name__ == '__main__':
@@ -170,7 +171,7 @@ if __name__ == '__main__':
         t = threading.Thread(target=myThreadFunc, args=(itemName, itemSize, itemColor, itemQty, colorText, myCaptchaToken,))
         t.start()
     print
-    
+
     mobileStockPollSession = requests.session()
     headers = {
         'Host':              'www.supremenewyork.com',
