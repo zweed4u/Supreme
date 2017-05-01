@@ -40,7 +40,6 @@ def productThread(name, size, color, qty):
             pass
         for category in range(0, len(mobileStockJson['products_and_categories'].values())):
             for item in range(0, len(mobileStockJson['products_and_categories'].values()[category])):
-                #print mobileStockJson['products_and_categories'].values()[category][item]['name']
                 if name in mobileStockJson['products_and_categories'].values()[category][item]['name']:
                     #Retain useful info here like index but mostly the id for add request
                     stopPoll = 1
@@ -164,7 +163,6 @@ if __name__ == '__main__':
         myThreadFunc = eval('productThread'+str(enumerableItem+1))
         print itemName, itemSize, itemColor, itemQty,'Thread initialized!'
         t = threading.Thread(target=myThreadFunc, args=(itemName, itemSize, itemColor, itemQty,))
-        #t = threading.Thread(target=exec(myThreadFunc), args=(itemName, user_config.poll, itemColor, itemSize, itemQty, user_config.ghostCheckoutPrevention,))
         t.start()
 
     mobileStockPollSession = requests.session()
