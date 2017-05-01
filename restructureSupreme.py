@@ -145,6 +145,8 @@ def productThread(name, size, color, qty):
                         sys.stdout.write("\r[["+str(threading.current_thread().getName())+"]] Waiting for "+str(user_config.ghostCheckoutPrevention-countDown)+" seconds to avoid ghost checkout!" + '\n')
                         sys.stdout.flush()
                         time.sleep(1)
+                sys.stdout.write("[["+str(threading.current_thread().getName())+"]] "+UTCtoEST()+' :: Checking out!'+'\n')
+
             break
 
 if __name__ == '__main__':
