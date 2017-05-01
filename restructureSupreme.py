@@ -146,6 +146,16 @@ def productThread(name, size, color, qty, textColor, selectedCaptchaToken):
                         sys.stdout.flush()
                         time.sleep(1)
                 sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST()+' :: Firing checkout request for [['+listedProductName+']]'+'\n')
+                checkoutResp = productATCSession.post(checkoutUrl,data=checkoutPayload,headers=atcSessionHeaders)
+                if checkoutResp.status_code != 200:
+                    sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST()+' :: Checkout response for [['+listedProductName+']] NOT 200!'+'\n')
+                    sys.exit()
+                else:
+                    #sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST()+' :: Checkout response for [['+listedProductName+']] 200!'+'\n')                 
+                    #sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST()+' :: Checking status of [['+listedProductName+']] checkout'+'\n')                 
+                    if 'fail' in checkoutResp.json()['status'].lower():
+                        sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST()+' :: Checkout for [['+listedProductName+']] '+FAIL+'FAILED!'+COLOR_END+'\n')
+                        sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST()+' :: [['+listedProductName+']] :: '+FAIL+str(checkoutResp.json()['errors'])+COLOR_END+'\n')
 
 
             break

@@ -13,4 +13,5 @@ colorCodes = {
     'pink':'\033[95m',
     'lightcyan':'\033[96m'
 }
+FAIL = '\033[31m'
 COLOR_END = '\033[0m'
