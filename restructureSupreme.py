@@ -166,7 +166,7 @@ if __name__ == '__main__':
         exec('productThread'+str(enumerableItem+1) + " = copy_func(productThread)")
         myThreadFunc = 'productThread'+str(enumerableItem+1)+'("'+itemName+'","'+itemSize+'","'+itemColor+'","'+itemQty+'")'
         myThreadFunc = eval('productThread'+str(enumerableItem+1))
-        print itemName, itemSize, itemColor, itemQty,'Thread initialized!'
+        print colorText+itemName, itemSize, itemColor, itemQty,COLOR_END,'Thread initialized!'
         t = threading.Thread(target=myThreadFunc, args=(itemName, itemSize, itemColor, itemQty, colorText, myCaptchaToken,))
         t.start()
 
