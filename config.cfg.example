@@ -5,27 +5,33 @@ poll = 3
 ghostCheckoutPrevention = 5
 
 [productName] #adjust/add more items here - just be sure to have the same number of products in each section(name, size, color, qty)
-name1 = box logo
-name2 = hoodie
+name1 = rigid slim
+name2 = tagless
+name3 = denim short
 
-[productSize]
-#String eg. 'Medium', 'OS', 'N/A'
-size1 = Small 
-size2 = Medium
 
 [productColor]
 #String eg. 'Red'
-color1 = gray
-color2 = camo
+color1 = indigo
+color2 = black
+color3 = purple
+
+[productSize]
+#String eg. 'Medium', 'OS', 'N/A'
+size1 = 30
+size2 = large
+size3 = 34
 
 [productQty]
 amount1 = 1
-amount2 = 4
+amount2 = 1
+amount3 = 1
 
 [cardInfo] #this is a config for billing the same as shipping address - card type option value = 'master', 'visa'
 firstAndLast = John Doe
 email = anon@mailinator.com
-phone = 585-867-5309
+
+phone = 800-867-5309
 address = 123 Drury Lane
 zip = 90210
 city = Beverly Hills
