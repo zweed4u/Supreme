@@ -45,7 +45,7 @@ def productThread(name, size, color, qty):
                     stopPoll = 1
                     listedProductName = mobileStockJson['products_and_categories'].values()[category][item]['name']
                     productID = mobileStockJson['products_and_categories'].values()[category][item]['id']
-                    sys.stdout.write("[["+str(threading.current_thread().getName())+"]] "+UTCtoEST()+' :: '+listedProductName+' '+str(productID)+' found ( MATCHING ITEM DETECTED )'+ '\n')
+                    sys.stdout.write("[["+str(threading.current_thread().getName())+"]] "+UTCtoEST()+' :: [['+listedProductName+']] '+str(productID)+' found ( MATCHING ITEM DETECTED )'+ '\n')
         if (stopPoll != 1): 
             sys.stdout.write("[["+str(threading.current_thread().getName())+"]] "+UTCtoEST()+' :: Reloading and reparsing page...'+ '\n')
             time.sleep(user_config.poll)
@@ -54,7 +54,7 @@ def productThread(name, size, color, qty):
             foundItemColor = 0
             foundItemSize = 0
             atcSession = requests.session()
-            sys.stdout.write("[["+str(threading.current_thread().getName())+"]] "+UTCtoEST()+' :: Selecting '+listedProductName+' ( '+str(productID)+' )' + '\n')
+            sys.stdout.write("[["+str(threading.current_thread().getName())+"]] "+UTCtoEST()+' :: Selecting [['+listedProductName+']] ( '+str(productID)+' )' + '\n')
             productItemData = atcSession.get('http://www.supremenewyork.com/shop/'+str(productID)+'.json',headers={'User-Agent':'Mozilla/5.0 (iPhone; CPU iPhone OS 7_1_2 like Mac OS X) AppleWebKit/537.51.2 (KHTML, like Gecko) Mobile/11D257'}).json()
             for listedProductColors in productItemData['styles']:
                 if color in listedProductColors['name']:
@@ -66,7 +66,7 @@ def productThread(name, size, color, qty):
                             foundItemSize = 1
                             selectedSize = size
                             sizeProductId = listedProductSizes['id']
-                            sys.stdout.write("[["+str(threading.current_thread().getName())+"]] "+UTCtoEST()+' :: Selecting size: '+ selectedSize+' ( '+selectedColor+' ) '+' ( '+str(sizeProductId)+' )' + '\n')
+                            sys.stdout.write("[["+str(threading.current_thread().getName())+"]] "+UTCtoEST()+' :: Selecting size for [['+listedProductName+']] - '+ selectedSize+' ( '+selectedColor+' ) '+' ( '+str(sizeProductId)+' )' + '\n')
                             break
             if (foundItemColor == 0 or foundItemSize == 0):
                 #couldn't find user desired selection of color and size. picking defaults
@@ -97,7 +97,7 @@ def productThread(name, size, color, qty):
                 'size': str(sizeProductId),
                 'qty':  qty
             }
-            sys.stdout.write("[["+str(threading.current_thread().getName())+"]] "+UTCtoEST() +' :: Adding product to cart...' + '\n')
+            sys.stdout.write("[["+str(threading.current_thread().getName())+"]] "+UTCtoEST() +' :: Adding [['+listedProductName+']] to cart...' + '\n')
             addResp = productATCSession.post(addUrl,data=addPayload,headers=atcSessionHeaders)
             if addResp.status_code != 200: #DID ITEM ADD TO CART - wait/sleep and make POST again
                 sys.stdout.write("[["+str(threading.current_thread().getName())+"]] "+UTCtoEST() +' ::',addResp.status_code,'Error \nExiting...' + '\n')
@@ -144,7 +144,7 @@ def productThread(name, size, color, qty):
                         sys.stdout.write("\r[["+str(threading.current_thread().getName())+"]] Waiting for "+str(user_config.ghostCheckoutPrevention-countDown)+" seconds to avoid ghost checkout!" + '\n')
                         sys.stdout.flush()
                         time.sleep(1)
-                sys.stdout.write("[["+str(threading.current_thread().getName())+"]] "+UTCtoEST()+' :: Firing checkout request!'+'\n')
+                sys.stdout.write("[["+str(threading.current_thread().getName())+"]] "+UTCtoEST()+' :: Firing checkout request for [['+listedProductName+']]'+'\n')
 
             break
 
