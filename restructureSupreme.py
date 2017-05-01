@@ -46,18 +46,16 @@ def productThread(name, size, color, qty):
                     stopPoll = 1
                     listedProductName = mobileStockJson['products_and_categories'].values()[category][item]['name']
                     productID = mobileStockJson['products_and_categories'].values()[category][item]['id']
-                    print
-                    print UTCtoEST(),'::',listedProductName, productID, 'found ( MATCHING ITEM DETECTED )'
-                    print
+                    sys.stdout.write("[["+str(threading.current_thread().getName())+"]] "+UTCtoEST()+' :: '+listedProductName+' '+str(productID)+' found ( MATCHING ITEM DETECTED )'+ '\n')
         if (stopPoll != 1): 
-            print UTCtoEST(),':: Reloading and reparsing page...'
+            sys.stdout.write("[["+str(threading.current_thread().getName())+"]] "+UTCtoEST()+' :: Reloading and reparsing page...'+ '\n')
             time.sleep(user_config.poll)
         else:
             #Item found continue to add and checkout
             foundItemColor = 0
             foundItemSize = 0
             atcSession = requests.session()
-            print UTCtoEST(),':: Selecting',listedProductName,'(',productID,')'
+            sys.stdout.write("[["+str(threading.current_thread().getName())+"]] "+UTCtoEST()+' :: Selecting '+listedProductName+' ( '+str(productID)+' )' + '\n')
             productItemData = atcSession.get('http://www.supremenewyork.com/shop/'+str(productID)+'.json',headers={'User-Agent':'Mozilla/5.0 (iPhone; CPU iPhone OS 7_1_2 like Mac OS X) AppleWebKit/537.51.2 (KHTML, like Gecko) Mobile/11D257'}).json()
             for listedProductColors in productItemData['styles']:
                 if color in listedProductColors['name']:
@@ -69,16 +67,16 @@ def productThread(name, size, color, qty):
                             foundItemSize = 1
                             selectedSize = size
                             sizeProductId = listedProductSizes['id']
-                            print UTCtoEST(),':: Selecting size:', selectedSize,'(',selectedColor,')','(',sizeProductId,')'
+                            sys.stdout.write("[["+str(threading.current_thread().getName())+"]] "+UTCtoEST()+' :: Selecting size: '+ selectedSize+' ( '+selectedColor+' ) '+' ( '+str(sizeProductId)+' )' + '\n')
                             break
             if (foundItemColor == 0 or foundItemSize == 0):
                 #couldn't find user desired selection of color and size. picking defaults
-                print UTCtoEST(),':: Selecting default colorway:',productItemData['styles'][0]['name']
+                sys.stdout.write("[["+str(threading.current_thread().getName())+"]] "+UTCtoEST()+' :: Selecting default colorway: '+productItemData['styles'][0]['name'] + '\n')
                 selectedSize = str(productItemData['styles'][0]['sizes'][len(productItemData['styles'][0]['sizes'])-1]['name'])
                 sizeProductId = str(productItemData['styles'][0]['sizes'][len(productItemData['styles'][0]['sizes'])-1]['id'])
                 selectedColor = productItemData['styles'][0]['name']
                 colorProductId = productItemData['styles'][0]['id']
-                print UTCtoEST(),':: Selecting default size:', selectedSize,'(',selectedColor,')','(',sizeProductId,')'
+                sys.stdout.write("[["+str(threading.current_thread().getName())+"]] "+UTCtoEST()+' :: Selecting default size: '+ selectedSize+' ( '+selectedColor+' ) '+' ( '+str(sizeProductId)+' )' + '\n')
 
             productATCSession = requests.session()
             addUrl = 'http://www.supremenewyork.com/shop/'+str(productID)+'/add.json'
@@ -100,19 +98,17 @@ def productThread(name, size, color, qty):
                 'size': str(sizeProductId),
                 'qty':  qty
             }
-            print UTCtoEST() +' :: Adding product to cart...'
+            sys.stdout.write("[["+str(threading.current_thread().getName())+"]] "+UTCtoEST() +' :: Adding product to cart...' + '\n')
             addResp = productATCSession.post(addUrl,data=addPayload,headers=atcSessionHeaders)
             if addResp.status_code != 200: #DID ITEM ADD TO CART - wait/sleep and make POST again
-                print UTCtoEST() +' ::',addResp.status_code,'Error \nExiting...'
-                print addResp.json()
-                print
+                sys.stdout.write("[["+str(threading.current_thread().getName())+"]] "+UTCtoEST() +' ::',addResp.status_code,'Error \nExiting...' + '\n')
+                sys.stdout.write("[["+str(threading.current_thread().getName())+"]] "+addResp.json() + '\n')
                 sys.exit()
             else:
                 if addResp.json() == []: #request was OK but did not add item to cart - wait/sleep and make POST again
-                    print UTCtoEST() +' :: Response Empty! - Problem Adding to Cart\nExiting...'  #CHECK THIS - DID ITEM ADD TO CART? MAKE POST AGAIN
-                    print
+                    sys.stdout.write("[["+str(threading.current_thread().getName())+"]] "+UTCtoEST() +' :: Response Empty! - Problem Adding to Cart\nExiting...' + '\n')  #CHECK THIS - DID ITEM ADD TO CART? MAKE POST AGAIN
                     sys.exit()
-                print UTCtoEST() +' :: [['+listedProductName+' - '+str(selectedColor)+' - '+str(selectedSize)+']] added to cart!'
+                sys.stdout.write("[["+str(threading.current_thread().getName())+"]] "+UTCtoEST() +' :: [['+listedProductName+' - '+str(selectedColor)+' - '+str(selectedSize)+']] added to cart!' + '\n')
                 checkoutUrl = 'https://www.supremenewyork.com/checkout.json'
                 del atcSessionHeaders['X-Requested-With']
                 captchaResponse = '' #need mutex here to declare from pop of global solved captcha token - define captchaTokens=['token1','token2','token3'] at top/global - captchaResponse = captchaTokens.pop() #last element taken
@@ -145,14 +141,10 @@ def productThread(name, size, color, qty):
                     'is_from_ios_native':       '1'
                 }
                 # GHOST CHECKOUT PREVENTION WITH ROLLING PRINT
-                '''
                 for countDown in range(user_config.ghostCheckoutPrevention):
-                        sys.stdout.write("\r" +UTCtoEST()+ ' :: Sleeping for '+str(user_config.ghostCheckoutPrevention-countDown)+' seconds to avoid ghost checkout...')
+                        sys.stdout.write("\r[["+str(threading.current_thread().getName())+"]] Waiting for "+str(user_config.ghostCheckoutPrevention-countDown)+" seconds to avoid ghost checkout!" + '\n')
                         sys.stdout.flush()
                         time.sleep(1)
-                '''
-                print "[["+str(threading.current_thread().getName())+"]] Waiting for",str(user_config.ghostCheckoutPrevention),"seconds to avoid ghost checkout!"
-            print
             break
 
 if __name__ == '__main__':
