@@ -179,7 +179,7 @@ if __name__ == '__main__':
         itemColor = c.get('productColor',c.options('productColor')[enumerableItem]).title()
         itemQty = c.get('productQty',c.options('productQty')[enumerableItem])
         exec('productThread'+str(enumerableItem+1) + " = copy_func(productThread)")
-        myThreadFunc = 'productThread'+str(enumerableItem+1)+'("'+itemName+'","'+itemSize+'","'+itemColor+'","'+itemQty+'")'
+        #myThreadFunc = 'productThread'+str(enumerableItem+1)+'("'+itemName+'","'+itemSize+'","'+itemColor+'","'+itemQty+'")'
         myThreadFunc = eval('productThread'+str(enumerableItem+1))
         print "[["+colorText+"Thread-"+str(enumerableItem+1)+COLOR_END+"]]",colorText,itemName, itemSize, itemColor, itemQty,'Thread initialized!',COLOR_END
         t = threading.Thread(target=myThreadFunc, args=(itemName, itemSize, itemColor, itemQty, colorText, myCaptchaToken,))
