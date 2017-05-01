@@ -145,10 +145,13 @@ def productThread(name, size, color, qty):
                     'is_from_ios_native':       '1'
                 }
                 # GHOST CHECKOUT PREVENTION WITH ROLLING PRINT
+                '''
                 for countDown in range(user_config.ghostCheckoutPrevention):
                         sys.stdout.write("\r" +UTCtoEST()+ ' :: Sleeping for '+str(user_config.ghostCheckoutPrevention-countDown)+' seconds to avoid ghost checkout...')
                         sys.stdout.flush()
                         time.sleep(1)
+                '''
+                print "[["+str(threading.current_thread().getName())+"]] Waiting for",str(user_config.ghostCheckoutPrevention),"seconds to avoid ghost checkout!"
             print
             break
 
