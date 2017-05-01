@@ -12,21 +12,21 @@ configFilePath = os.path.join(rootDirectory, 'config.cfg')
 c.read(configFilePath)
 
 class Config:
-    poll=int(c.get('timeComponents','poll'))
-    ghostCheckoutPrevention=c.get('timeComponents','ghostCheckoutPrevention')
-    billingName=c.get('cardInfo','firstAndLast')
-    email=c.get('cardInfo','email')
-    phone=c.get('cardInfo','phone')
-    streetAddress=c.get('cardInfo','address')
-    zipCode=c.get('cardInfo','zip')
-    shippingCity=c.get('cardInfo','city')
-    shippingState=c.get('cardInfo','state')
-    shippingCountry=c.get('cardInfo','country')
-    cardType=c.get('cardInfo','cardType')
-    cardNumber=c.get('cardInfo','cardNumber')
-    cardMonth=c.get('cardInfo','cardMonth')
-    cardYear=c.get('cardInfo','cardYear')
-    cardCVV=c.get('cardInfo','cardCVV')
+    poll = int(c.get('timeComponents','poll'))
+    ghostCheckoutPrevention = int(c.get('timeComponents','ghostCheckoutPrevention'))
+    billingName = c.get('cardInfo','firstAndLast')
+    email = c.get('cardInfo','email')
+    phone = c.get('cardInfo','phone')
+    streetAddress = c.get('cardInfo','address')
+    zipCode = c.get('cardInfo','zip')
+    shippingCity = c.get('cardInfo','city')
+    shippingState = c.get('cardInfo','state')
+    shippingCountry = c.get('cardInfo','country')
+    cardType = c.get('cardInfo','cardType')
+    cardNumber = c.get('cardInfo','cardNumber')
+    cardMonth = c.get('cardInfo','cardMonth')
+    cardYear = c.get('cardInfo','cardYear')
+    cardCVV = c.get('cardInfo','cardCVV')
 
 def UTCtoEST():
     current=datetime.now()
@@ -108,13 +108,47 @@ def productThread(name, size, color, qty):
                 print
                 sys.exit()
             else:
-                if addResp.json()==[]: #request was OK but did not add item to cart - wait/sleep and make POST again
+                if addResp.json() == []: #request was OK but did not add item to cart - wait/sleep and make POST again
                     print UTCtoEST() +' :: Response Empty! - Problem Adding to Cart\nExiting...'  #CHECK THIS - DID ITEM ADD TO CART? MAKE POST AGAIN
                     print
                     sys.exit()
                 print UTCtoEST() +' :: [['+listedProductName+' - '+str(selectedColor)+' - '+str(selectedSize)+']] added to cart!'
-
-
+                checkoutUrl = 'https://www.supremenewyork.com/checkout.json'
+                del atcSessionHeaders['X-Requested-With']
+                captchaResponse = '' #need mutex here to declare from pop of global solved captcha token - define captchaTokens=['token1','token2','token3'] at top/global - captchaResponse = captchaTokens.pop() #last element taken
+                ###########################################
+                # FILL OUT THESE FIELDS AS NEEDED IN CONFIG
+                ###########################################
+                checkoutPayload = {
+                    'store_credit_id':          '',      
+                    'from_mobile':              '1',
+                    'cookie-sub':               '%7B%22'+str(sizeProductId)+'%22%3A1%7D', # cookie-sub: eg. {"VARIANT":1} urlencoded
+                    'same_as_billing_address':  '1',
+                    'order[billing_name]':      user_config.billingName,
+                    'order[email]':             user_config.email,
+                    'order[tel]':               user_config.phone,
+                    'order[billing_address]':   user_config.streetAddress,
+                    'order[billing_address_2]': '',
+                    'order[billing_zip]':       user_config.zipCode,
+                    'order[billing_city]':      user_config.shippingCity,
+                    'order[billing_state]':     user_config.shippingState,
+                    'order[billing_country]':   user_config.shippingCountry,
+                    'store_address':            '1',
+                    'credit_card[type]':        user_config.cardType,
+                    'credit_card[cnb]':         user_config.cardNumber,
+                    'credit_card[month]':       user_config.cardMonth,
+                    'credit_card[year]':        user_config.cardYear,
+                    'credit_card[vval]':        user_config.cardCVV,
+                    'order[terms]':             '0',
+                    'order[terms]':             '1',
+                    'g-recaptcha-response':     captchaResponse, #Could integrate harvester
+                    'is_from_ios_native':       '1'
+                }
+                # GHOST CHECKOUT PREVENTION WITH ROLLING PRINT
+                for countDown in range(user_config.ghostCheckoutPrevention):
+                        sys.stdout.write("\r" +UTCtoEST()+ ' :: Sleeping for '+str(user_config.ghostCheckoutPrevention-countDown)+' seconds to avoid ghost checkout...')
+                        sys.stdout.flush()
+                        time.sleep(1)
             print
             break
 
