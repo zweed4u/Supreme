@@ -1,2 +1,5 @@
 # zweed4u config
 config.cfg
+
+# pyc files
+*.pyc
