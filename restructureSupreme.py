@@ -153,11 +153,15 @@ def productThread(name, size, color, qty, textColor, selectedCaptchaToken):
                 else:
                     #sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST()+' :: Checkout response for [['+listedProductName+']] 200!'+'\n')                 
                     #sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST()+' :: Checking status of [['+listedProductName+']] checkout'+'\n')                 
-                    if 'fail' in checkoutResp.json()['status'].lower():
-                        sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST()+' :: Checkout for [['+listedProductName+']] '+FAIL+'FAILED!'+COLOR_END+'\n')
-                        sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST()+' :: [['+listedProductName+']] :: '+FAIL+str(checkoutResp.json()['errors'])+COLOR_END+'\n')
-
-
+                    try: #handle if 'status' key not in json response
+                        if 'fail' in checkoutResp.json()['status'].lower():
+                            sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST()+' :: Checkout for [['+listedProductName+']] '+FAIL+'FAILED!'+COLOR_END+'\n')
+                            sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST()+' :: [['+listedProductName+']] :: '+FAIL+str(checkoutResp.json()['errors'])+COLOR_END+'\n')
+                        else:
+                            sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST()+' :: Checkout for [['+listedProductName+']] '+str(checkoutResp.json()['status'])+'\n')
+                    except: #couldnt find key - notify and just print whole response
+                        sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST()+' :: "status" key not found in [['+listedProductName+']] checkout response'+'\n')
+                        sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST()+' :: [['+listedProductName+']] '+str(checkoutResp.json())+'\n')
             break
 
 if __name__ == '__main__':
