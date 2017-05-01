@@ -3,6 +3,7 @@ import os, sys, json, time, requests, urllib2, random, threading, ConfigParser
 from datetime import datetime
 from functionCreate import copy_func
 from colorCodes import *
+from tokenContainer import *
 
 global stopPoll
 global mobileStockJson
@@ -33,7 +34,7 @@ def UTCtoEST():
     current=datetime.now()
     return str(current) + ' EST'
 
-def productThread(name, size, color, qty, textColor):
+def productThread(name, size, color, qty, textColor, selectedCaptchaToken):
     #include sleep and found flag to break in main - try catch fo NULL init handling
     stopPoll = 0
     while 1:
@@ -111,7 +112,6 @@ def productThread(name, size, color, qty, textColor):
                 sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST() +' :: [['+listedProductName+' - '+str(selectedColor)+' - '+str(selectedSize)+']] added to cart!' + '\n')
                 checkoutUrl = 'https://www.supremenewyork.com/checkout.json'
                 del atcSessionHeaders['X-Requested-With']
-                captchaResponse = '' #need mutex here to declare from pop of global solved captcha token - define captchaTokens=['token1','token2','token3'] at top/global - captchaResponse = captchaTokens.pop() #last element taken
                 ###########################################
                 # FILL OUT THESE FIELDS AS NEEDED IN CONFIG
                 ###########################################
@@ -137,7 +137,7 @@ def productThread(name, size, color, qty, textColor):
                     'credit_card[vval]':        user_config.cardCVV,
                     'order[terms]':             '0',
                     'order[terms]':             '1',
-                    'g-recaptcha-response':     captchaResponse, #Could integrate harvester
+                    'g-recaptcha-response':     selectedCaptchaToken, #This is the param passed that can be found in tokenContainer.py - picked at random - manually populate that list in that file with tokens
                     'is_from_ios_native':       '1'
                 }
                 # GHOST CHECKOUT PREVENTION WITH ROLLING PRINT
@@ -156,7 +156,9 @@ if __name__ == '__main__':
     assert len(c.options('productName')) == len(c.options('productSize')) == len(c.options('productColor')) == len(c.options('productQty')),'Assertion Error: Product section lengths unmatched'
     for enumerableItem in range(0, len(c.options('productName'))):
         colorText = random.choice(colorCodes.values())
-        colorCodes = {key:val for key, val in colorCodes.items() if val != colorText}
+        colorCodes = {key:val for key, val in colorCodes.items() if val != colorText}   #update dict to not use the same color for another thread
+        myCaptchaToken = random.choice(captchaTokenArray)
+        captchaTokenArray.remove(myCaptchaToken)    #update list as to not reuse the same token
         itemName = c.get('productName',c.options('productName')[enumerableItem]).title()
         itemSize = c.get('productSize',c.options('productSize')[enumerableItem]).title()
         itemColor = c.get('productColor',c.options('productColor')[enumerableItem]).title()
@@ -165,7 +167,7 @@ if __name__ == '__main__':
         myThreadFunc = 'productThread'+str(enumerableItem+1)+'("'+itemName+'","'+itemSize+'","'+itemColor+'","'+itemQty+'")'
         myThreadFunc = eval('productThread'+str(enumerableItem+1))
         print itemName, itemSize, itemColor, itemQty,'Thread initialized!'
-        t = threading.Thread(target=myThreadFunc, args=(itemName, itemSize, itemColor, itemQty, colorText,))
+        t = threading.Thread(target=myThreadFunc, args=(itemName, itemSize, itemColor, itemQty, colorText, myCaptchaToken,))
         t.start()
 
     mobileStockPollSession = requests.session()
