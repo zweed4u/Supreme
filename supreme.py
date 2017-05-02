@@ -47,7 +47,7 @@ def productThread(name, size, color, qty, textColor, selectedCaptchaToken):
                     stopPoll = 1
                     listedProductName = mobileStockJson['products_and_categories'].values()[category][item]['name']
                     productID = mobileStockJson['products_and_categories'].values()[category][item]['id']
-                    sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST()+' :: [['+listedProductName+']] '+str(productID)+' found ( MATCHING ITEM DETECTED )'+ '\n')
+                    sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST()+' :: [['+textColor+listedProductName+COLOR_END+']] '+str(productID)+' found ( MATCHING ITEM DETECTED )'+ '\n')
         if (stopPoll != 1): 
             sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST()+' :: Reloading and reparsing page...'+ '\n')
             time.sleep(user_config.poll)
@@ -56,7 +56,7 @@ def productThread(name, size, color, qty, textColor, selectedCaptchaToken):
             foundItemColor = 0
             foundItemSize = 0
             atcSession = requests.session()
-            sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST()+' :: Selecting [['+listedProductName+']] ( '+str(productID)+' )' + '\n')
+            sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST()+' :: Selecting [['+textColor+listedProductName+COLOR_END+']] ( '+str(productID)+' )' + '\n')
             productItemData = atcSession.get('http://www.supremenewyork.com/shop/'+str(productID)+'.json',headers={'User-Agent':'Mozilla/5.0 (iPhone; CPU iPhone OS 7_1_2 like Mac OS X) AppleWebKit/537.51.2 (KHTML, like Gecko) Mobile/11D257'}).json()
             for listedProductColors in productItemData['styles']:
                 if color in listedProductColors['name']:
@@ -68,7 +68,7 @@ def productThread(name, size, color, qty, textColor, selectedCaptchaToken):
                             foundItemSize = 1
                             selectedSize = size
                             sizeProductId = listedProductSizes['id']
-                            sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST()+' :: Selecting size for [['+listedProductName+']] - '+ selectedSize+' ( '+selectedColor+' ) '+' ( '+str(sizeProductId)+' )' + '\n')
+                            sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST()+' :: Selecting size for [['+textColor+listedProductName+COLOR_END+']] - '+ selectedSize+' ( '+selectedColor+' ) '+' ( '+str(sizeProductId)+' )' + '\n')
                             break
             if (foundItemColor == 0 or foundItemSize == 0):
                 #couldn't find user desired selection of color and size. picking defaults
@@ -99,7 +99,7 @@ def productThread(name, size, color, qty, textColor, selectedCaptchaToken):
                 'size': str(sizeProductId),
                 'qty':  qty
             }
-            sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST() +' :: Adding [['+listedProductName+']] to cart...' + '\n')
+            sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST() +' :: Adding [['+textColor+listedProductName+COLOR_END+']] to cart...' + '\n')
             addResp = productATCSession.post(addUrl,data=addPayload,headers=atcSessionHeaders)
             if addResp.status_code != 200: #DID ITEM ADD TO CART - wait/sleep and make POST again
                 sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST() +' ::',addResp.status_code,'Error \nExiting...' + '\n')
@@ -109,7 +109,7 @@ def productThread(name, size, color, qty, textColor, selectedCaptchaToken):
                 if addResp.json() == []: #request was OK but did not add item to cart - wait/sleep and make POST again
                     sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST() +' :: Response Empty! - Problem Adding to Cart\nExiting...' + '\n')  #CHECK THIS - DID ITEM ADD TO CART? MAKE POST AGAIN
                     sys.exit()
-                sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST() +' :: [['+listedProductName+' - '+str(selectedColor)+' - '+str(selectedSize)+']] added to cart!' + '\n')
+                sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST() +' :: [['+textColor+listedProductName+' - '+str(selectedColor)+' - '+str(selectedSize)+COLOR_END+']] added to cart!' + '\n')
                 checkoutUrl = 'https://www.supremenewyork.com/checkout.json'
                 del atcSessionHeaders['X-Requested-With']
                 ###########################################
@@ -145,23 +145,23 @@ def productThread(name, size, color, qty, textColor, selectedCaptchaToken):
                         sys.stdout.write("\r[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] Waiting for "+str(user_config.ghostCheckoutPrevention-countDown)+" seconds to avoid ghost checkout!" + '\n')
                         sys.stdout.flush()
                         time.sleep(1)
-                sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST()+' :: Firing checkout request for [['+listedProductName+']]'+'\n')
+                sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST()+' :: Firing checkout request for [['+textColor+listedProductName+COLOR_END+']]'+'\n')
                 checkoutResp = productATCSession.post(checkoutUrl,data=checkoutPayload,headers=atcSessionHeaders)
                 if checkoutResp.status_code != 200:
-                    sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST()+' :: Checkout response for [['+listedProductName+']] NOT 200!'+'\n')
+                    sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST()+' :: Checkout response for [['+textColor+listedProductName+COLOR_END+']] NOT 200!'+'\n')
                     sys.exit()
                 else:
                     #sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST()+' :: Checkout response for [['+listedProductName+']] 200!'+'\n')                 
                     #sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST()+' :: Checking status of [['+listedProductName+']] checkout'+'\n')                 
                     try: #handle if 'status' key not in json response
                         if 'fail' in checkoutResp.json()['status'].lower():
-                            sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST()+' :: Checkout for [['+listedProductName+']] '+FAIL+'FAILED!'+COLOR_END+'\n')
-                            sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST()+' :: [['+listedProductName+']] :: '+FAIL+str(checkoutResp.json()['errors'])+COLOR_END+'\n')
+                            sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST()+' :: Checkout for [['+textColor+listedProductName+COLOR_END+']] '+FAIL+'FAILED!'+COLOR_END+'\n')
+                            sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST()+' :: [['+textColor+listedProductName+COLOR_END+']] :: '+FAIL+str(checkoutResp.json()['errors'])+COLOR_END+'\n')
                         else:
-                            sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST()+' :: Checkout for [['+listedProductName+']] '+str(checkoutResp.json()['status'])+'\n')
+                            sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST()+' :: Checkout for [['+textColor+listedProductName+COLOR_END+']] '+str(checkoutResp.json()['status'])+'\n')
                     except: #couldnt find key - notify and just print whole response
-                        sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST()+' :: "status" key not found in [['+listedProductName+']] checkout response'+'\n')
-                        sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST()+' :: [['+listedProductName+']] '+str(checkoutResp.json())+'\n')
+                        sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST()+' :: "status" key not found in [['+textColor+listedProductName+COLOR_END+']] checkout response'+'\n')
+                        sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST()+' :: [['+textColor+listedProductName+COLOR_END+']] '+str(checkoutResp.json())+'\n')
             break
 
 if __name__ == '__main__':
