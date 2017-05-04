@@ -102,12 +102,12 @@ def productThread(name, size, color, qty, textColor, selectedCaptchaToken):
             sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST() +' :: Adding [['+textColor+listedProductName+COLOR_END+']] to cart...' + '\n')
             addResp = productATCSession.post(addUrl,data=addPayload,headers=atcSessionHeaders)
             if addResp.status_code != 200: #DID ITEM ADD TO CART - wait/sleep and make POST again
-                sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST() +' ::',addResp.status_code,'Error \nExiting...' + '\n')
+                sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST() +' ::',addResp.status_code,'Error [['+textColor+listedProductName+COLOR_END+']] '+FAIL+'FAILED!'+COLOR_END + '\n')
                 sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+addResp.json() + '\n')
                 sys.exit()
             else:
                 if addResp.json() == []: #request was OK but did not add item to cart - wait/sleep and make POST again
-                    sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST() +' :: Response Empty! - Problem Adding to Cart\nExiting...' + '\n')  #CHECK THIS - DID ITEM ADD TO CART? MAKE POST AGAIN
+                    sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST() +' :: Response Empty! - Problem Adding to Cart! [['+textColor+listedProductName+COLOR_END+']] '+FAIL+'FAILED!'+COLOR_END + '\n')  #CHECK THIS - DID ITEM ADD TO CART? MAKE POST AGAIN
                     sys.exit()
                 sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST() +' :: [['+textColor+listedProductName+' - '+str(selectedColor)+' - '+str(selectedSize)+COLOR_END+']] added to cart!' + '\n')
                 checkoutUrl = 'https://www.supremenewyork.com/checkout.json'
