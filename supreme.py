@@ -4,8 +4,6 @@ from datetime import datetime
 from functionCreate import copy_func
 from colorCodes import *
 from tokenContainer import *
-
-global stopPoll
 global mobileStockJson
 
 rootDirectory = os.getcwd()
@@ -36,7 +34,9 @@ def UTCtoEST():
 
 def productThread(name, size, color, qty, textColor, selectedCaptchaToken):
     #include sleep and found flag to break in main - try catch fo NULL init handling
+    global stopPoll, checkedOut
     stopPoll = 0
+    checkedOut = 0
     while 1:
         while not(mobileStockJson):
             pass
@@ -162,10 +162,12 @@ def productThread(name, size, color, qty, textColor, selectedCaptchaToken):
                     except: #couldnt find key - notify and just print whole response
                         sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST()+' :: "status" key not found in [['+textColor+listedProductName+COLOR_END+']] checkout response'+'\n')
                         sys.stdout.write("[["+textColor+str(threading.current_thread().getName())+COLOR_END+"]] "+UTCtoEST()+' :: [['+textColor+listedProductName+COLOR_END+']] '+str(checkoutResp.json())+'\n')
+                    checkedOut = 1
             break
 
 if __name__ == '__main__':
     stopPoll = 0
+    checkedOut = 0
     mobileStockJson = None
     user_config = Config()
     assert len(c.options('productName')) == len(c.options('productSize')) == len(c.options('productColor')) == len(c.options('productQty')),'Assertion Error: Product section lengths unmatched'
@@ -205,4 +207,5 @@ if __name__ == '__main__':
             time.sleep(user_config.poll)
         else:
             #Item/s found! wait for thread completion
-            pass 
+            if (checkedOut==1):
+                sys.exit() 
