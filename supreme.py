@@ -1,5 +1,13 @@
 #!/usr/bin/python
-import os, sys, json, time, requests, urllib, random, threading, ConfigParser
+import os
+import sys
+import json
+import time
+import requests
+import urllib
+import random
+import threading
+import ConfigParser
 from datetime import datetime
 from functionCreate import copy_func
 from colorCodes import *
