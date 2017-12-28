@@ -137,15 +137,13 @@ def productThread(name, size, color, qty, textColor, selectedCaptchaToken):
                     'order[billing_city]':      user_config.shippingCity,
                     'order[billing_state]':     user_config.shippingState,
                     'order[billing_country]':   user_config.shippingCountry,
-                    'store_address':            '1',
                     'credit_card[cnb]':         user_config.cardNumber,
                     'credit_card[month]':       user_config.cardMonth,
                     'credit_card[year]':        user_config.cardYear,
                     'credit_card[rsusr]':       user_config.cardCVV,
                     'order[terms]':             '0',
-                    'order[terms]':             '1'
-                    #'g-recaptcha-response':     selectedCaptchaToken, #This is the param passed that can be found in tokenContainer.py - picked at random - manually populate that list in that file with tokens
-                    #'is_from_ios_native':       '1'
+                    'g-recaptcha-response':     selectedCaptchaToken, #This is the param passed that can be found in tokenContainer.py - picked at random - manually populate that list in that file with tokens
+                    'is_from_ios_native':       '1'
                 }
                 # GHOST CHECKOUT PREVENTION WITH ROLLING PRINT
                 for countDown in range(user_config.ghostCheckoutPrevention):
