@@ -3,3 +3,10 @@ config.cfg
 
 # pyc files
 *.pyc
+
+# pycharm
+*.idea/
+
+# chromedriver bin
+chromedriver
+

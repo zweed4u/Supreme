@@ -1,4 +1,6 @@
-import types, functools
+import types
+import functools
+
 
 def copy_func(f):
     g = types.FunctionType(f.func_code, f.func_globals, name=f.func_name,
