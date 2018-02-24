@@ -14,6 +14,8 @@ from selenium import webdriver
 from requests.utils import dict_from_cookiejar
 from colorCodes import *
 from tokenContainer import *
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import Select
 
 global mobileStockJson
 
@@ -206,11 +208,116 @@ def productThread(name, size, color, qty, textColor, selectedCaptchaToken):
                 time.sleep(1)
                 driver.refresh()
                 driver.get('https://www.supremenewyork.com/checkout')
-                raw_input('')
-                #########################################################################
-                #########################################################################
-                #########################################################################
 
+                # This is awful - sorry - safeguard against selector changes
+                try:
+                    customer_name = driver.find_element_by_id(
+                        'order_billing_name')
+                    customer_name.clear()
+                    customer_name.send_keys(user_config.billingName)
+                except:
+                    print 'Couldn\'t find order billing name field'
+                    raw_input('Click to continue automation...')
+                try:
+                    customer_email = driver.find_element_by_id('order_email')
+                    customer_email.clear()
+                    customer_email.send_keys(user_config.email)
+                except:
+                    print 'Couldn\'t find order email field'
+                    raw_input('Click to continue automation...')
+                try:
+                    customer_telephone = driver.find_element_by_id('order_tel')
+                    customer_telephone.clear()
+                    customer_telephone.send_keys(user_config.phone)
+                except:
+                    print 'Couldn\'t find order tel field'
+                    raw_input('Click to continue automation...')
+                try:
+                    customer_address = driver.find_element_by_id('bo')
+                    customer_address.clear()
+                    customer_address.send_keys(user_config.streetAddress)
+                except:
+                    print 'Couldn\'t find bo field (address)'
+                    raw_input('Click to continue automation...')
+                try:
+                    customer_zip = driver.find_element_by_id(
+                        'order_billing_zip')
+                    customer_zip.clear()
+                    customer_zip.send_keys(user_config.zipCode)
+                except:
+                    print 'Couldn\'t find order billing zip field'
+                    raw_input('Click to continue automation...')
+                try:
+                    customer_city = driver.find_element_by_id(
+                        'order_billing_city')
+                    customer_city.clear()
+                    customer_city.send_keys(user_config.shippingCity)
+                except:
+                    print 'Couldn\'t find order billing city field'
+                    raw_input('Click to continue automation...')
+                try:
+                    customer_state = Select(
+                        driver.find_element_by_id('order_billing_state'))
+                    customer_state.select_by_value(
+                        user_config.shippingState.upper())  # or visible text
+                except:
+                    print 'Couldn\'t find order billing state dropdown/value'
+                    raw_input('Click to continue automation...')
+                try:
+                    customer_country = Select(
+                        driver.find_element_by_id('order_billing_country'))
+                    customer_country.select_by_value(
+                        user_config.shippingCountry.upper())  # or visible text (USA or CANADA)
+                except:
+                    print 'Couldn\'t find order billing country drowpdown/value'
+                    raw_input('Click to continue automation...')
+                try:
+                    customer_card_number = driver.find_element_by_id('nnaerb')
+                    customer_card_number.clear()
+                    customer_card_number.send_keys(user_config.cardNumber)
+                except:
+                    print 'Couldn\'t find nnaerb field (card number)'
+                    raw_input('Click to continue automation...')
+                try:
+                    customer_card_month = Select(driver.find_element_by_id(
+                        'credit_card_month'))  # month must be padded eg. 09
+                    customer_card_month.select_by_value(user_config.cardMonth)
+                except:
+                    print 'Couldn\'t find credit card month dropdown/value'
+                    raw_input('Click to continue automation...')
+                try:
+                    customer_card_year = Select(
+                        driver.find_element_by_id('credit_card_year'))
+                    customer_card_year.select_by_value(user_config.cardYear)
+                except:
+                    print 'Couldn\'t find credit card year dropdown/value'
+                    raw_input('Click to continue automation...')
+                try:
+                    customer_card_cvv = driver.find_element_by_id('orcer')
+                    customer_card_cvv.clear()
+                    customer_card_cvv.send_keys(user_config.cardCVV)
+                except:
+                    print 'Couldn\'t find orcer field (card cvv)'
+                    raw_input('Click to continue automation...')
+                try:
+                    accept_terms = driver.find_element_by_css_selector('#cart-cc > fieldset > p:nth-child(4) > label > div > ins')
+                    accept_terms.click()
+                except:
+                    print 'Couldn\'t find accept terms radio button'
+                    raw_input('Click to continue automation...')
+                raw_input('NEXT STEP IS TO CHECKOUT')
+                try:
+                    checkout_button = driver.find_element_by_css_selector(
+                        '#pay > input')
+                    checkout_button.click()
+                except:
+                    print 'Couldn\'t find process/pay/checkout button'
+                    raw_input('Click to continue automation...')
+
+                #########################################################################
+                #########################################################################
+                #########################################################################
+                """
                 checkoutUrl = 'https://www.supremenewyork.com/checkout.json'
                 del atcSessionHeaders['X-Requested-With']
                 ###########################################
@@ -278,7 +385,8 @@ def productThread(name, size, color, qty, textColor, selectedCaptchaToken):
                         sys.stdout.write("[[" + textColor + str(
                             threading.current_thread().getName()) + COLOR_END + "]] " + UTCtoEST() + ' :: [[' + textColor + listedProductName + COLOR_END + ']] ' + str(
                             checkoutResp.json()) + '\n')
-                    checkedOut = 1
+                    """
+                checkedOut = 1
             break
 
 
