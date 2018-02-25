@@ -184,7 +184,7 @@ def productThread(name, size, color, qty, textColor, selectedCaptchaToken):
                         "sameSite": "no_restriction",
                         "secure": False,
                         "session": False,
-                        "storeId": "0",
+                        "storeId": "1",
                         "id": id
                     }
                     dict_template['name'] = key
@@ -250,6 +250,7 @@ def productThread(name, size, color, qty, textColor, selectedCaptchaToken):
                 try:
                     customer_city = driver.find_element_by_id(
                         'order_billing_city')
+                    customer_city.click()
                     customer_city.clear()
                     customer_city.send_keys(user_config.shippingCity)
                 except:
