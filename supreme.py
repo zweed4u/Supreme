@@ -172,6 +172,7 @@ def productThread(name, size, color, qty, textColor, selectedCaptchaToken):
                 """
 
                 cookie_dict_wrapper = []
+                cookie_store = addResp.cookies._cookies['.supremenewyork.com']['/']['_supreme_sess'].version
                 id = 1
                 for key, value in requests.utils.dict_from_cookiejar(
                         addResp.cookies).items():
@@ -184,7 +185,7 @@ def productThread(name, size, color, qty, textColor, selectedCaptchaToken):
                         "sameSite": "no_restriction",
                         "secure": False,
                         "session": False,
-                        "storeId": "1",
+                        "storeId": str(cookie_store),
                         "id": id
                     }
                     dict_template['name'] = key
