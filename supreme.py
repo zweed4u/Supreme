@@ -209,7 +209,7 @@ def productThread(name, size, color, qty, textColor, selectedCaptchaToken):
                 time.sleep(1)
                 driver.refresh()
                 driver.get('https://www.supremenewyork.com/checkout')
-
+                print json.dumps(driver.get_cookies(), indent=4)  # trust that cookies were transferred to selenium properly - EditThisCookie use case
                 # This is awful - sorry - safeguard against selector changes
                 try:
                     customer_name = driver.find_element_by_id(
