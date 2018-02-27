@@ -201,7 +201,7 @@ def productThread(name, size, color, qty, textColor, selectedCaptchaToken):
                 time.sleep(1)
                 driver.refresh()
                 driver.get('https://www.supremenewyork.com/checkout')
-                #print json.dumps(driver.get_cookies(), indent=4)  # trust that cookies were transferred to selenium properly - EditThisCookie use case
+                # print json.dumps(driver.get_cookies(), indent=4)  # trust that cookies were transferred to selenium properly - EditThisCookie use case
                 # This is awful - sorry - safeguard against selector changes
                 try:
                     customer_name = driver.find_element_by_id(
@@ -294,7 +294,8 @@ def productThread(name, size, color, qty, textColor, selectedCaptchaToken):
                     print 'Couldn\'t find orcer field (card cvv)'
                     raw_input('Click to continue automation...')
                 try:
-                    accept_terms = driver.find_element_by_css_selector('#cart-cc > fieldset > p:nth-child(4) > label > div > ins')
+                    accept_terms = driver.find_element_by_css_selector(
+                        '#cart-cc > fieldset > p:nth-child(4) > label > div > ins')
                     accept_terms.click()
                 except:
                     print 'Couldn\'t find accept terms radio button'
@@ -412,9 +413,10 @@ if __name__ == '__main__':
         # myThreadFunc = 'productThread'+str(enumerableItem+1)+'("'+itemName+'","'+itemSize+'","'+itemColor+'","'+itemQty+'")'
         myThreadFunc = eval('productThread' + str(enumerableItem + 1))
         print "[[" + colorText + "Thread-" + str(
-            enumerableItem + 1) + COLOR_END + "]]" + str(colorText) + str(
-            itemName) + str(itemSize) + str(itemColor) + str(
-            itemQty) + 'Thread initialized!' + str(COLOR_END)
+            enumerableItem + 1) + COLOR_END + "]] " + str(colorText) + str(
+            itemName) + ' :: ' + str(itemSize) + ' :: ' + str(
+            itemColor) + ' :: ' + str(
+            itemQty) + ' :: Thread initialized!' + str(COLOR_END)
         t = threading.Thread(target=myThreadFunc, args=(
             itemName, itemSize, itemColor, itemQty, colorText,
             myCaptchaToken,))
