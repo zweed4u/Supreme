@@ -172,26 +172,18 @@ def productThread(name, size, color, qty, textColor, selectedCaptchaToken):
                 """
 
                 cookie_dict_wrapper = []
-                cookie_store = addResp.cookies._cookies['.supremenewyork.com']['/']['_supreme_sess'].version
-                id = 1
                 for key, value in requests.utils.dict_from_cookiejar(
                         addResp.cookies).items():
                     dict_template = {
                         "domain": ".supremenewyork.com",
-                        "expirationDate": time.time() + 7200,
-                        "hostOnly": False,
+                        "expiry": int(time.time() + 7200),
                         "httpOnly": False,
                         "path": "/",
-                        "sameSite": "no_restriction",
-                        "secure": False,
-                        "session": False,
-                        "storeId": str(cookie_store),
-                        "id": id
+                        "secure": False
                     }
                     dict_template['name'] = key
                     dict_template['value'] = value
                     cookie_dict_wrapper.append(dict_template)
-                    id += 1
                 print '\tEditThisCookie Import\t'
                 print '####################################################################################################################################{}'.format(
                     textColor)
@@ -209,7 +201,7 @@ def productThread(name, size, color, qty, textColor, selectedCaptchaToken):
                 time.sleep(1)
                 driver.refresh()
                 driver.get('https://www.supremenewyork.com/checkout')
-                print json.dumps(driver.get_cookies(), indent=4)  # trust that cookies were transferred to selenium properly - EditThisCookie use case
+                #print json.dumps(driver.get_cookies(), indent=4)  # trust that cookies were transferred to selenium properly - EditThisCookie use case
                 # This is awful - sorry - safeguard against selector changes
                 try:
                     customer_name = driver.find_element_by_id(
