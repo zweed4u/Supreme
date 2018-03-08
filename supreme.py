@@ -92,7 +92,7 @@ def productThread(name, size, color, qty, textColor, selectedCaptchaToken):
                     productID) + '.json', headers={
                     'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 7_1_2 like Mac OS X) AppleWebKit/537.51.2 (KHTML, like Gecko) Mobile/11D257'}).json()
             for listedProductColors in productItemData['styles']:
-                if color in listedProductColors['name']:
+                if color.lower() in listedProductColors['name'].lower():
                     foundItemColor = 1
                     selectedColor = color
                     colorProductId = listedProductColors['id']
