@@ -62,8 +62,8 @@ def productThread(name, size, color, qty, textColor, selectedCaptchaToken):
             for item in range(0, len(
                     mobileStockJson['products_and_categories'].values()[
                         category])):
-                if name in mobileStockJson['products_and_categories'].values()[
-                    category][item]['name']:
+                if name.lower() in mobileStockJson['products_and_categories'].values()[
+                    category][item]['name'].lower():
                     # Retain useful info here like index but mostly the id for add request
                     stopPoll = 1
                     listedProductName = \
