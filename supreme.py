@@ -97,7 +97,7 @@ def productThread(name, size, color, qty, textColor, selectedCaptchaToken):
                     selectedColor = color
                     colorProductId = listedProductColors['id']
                     for listedProductSizes in listedProductColors['sizes']:
-                        if size in listedProductSizes['name']:
+                        if size.lower() in listedProductSizes['name'].lower():
                             foundItemSize = 1
                             selectedSize = size
                             sizeProductId = listedProductSizes['id']
