@@ -241,11 +241,13 @@ def productThread(name, size, color, qty, textColor, selectedCaptchaToken):
                     print 'Couldn\'t find order billing zip field'
                     raw_input('Click to continue automation...')
                 try:
-                    customer_city = driver.find_element_by_id(
-                        'order_billing_city')
-                    customer_city.click()
-                    customer_city.clear()
-                    customer_city.send_keys(user_config.shippingCity)
+                    # Let zip code auto fill this
+                    pass
+                    #customer_city = driver.find_element_by_id(
+                    #    'order_billing_city')
+                    #customer_city.click()
+                    #customer_city.clear()
+                    #customer_city.send_keys(user_config.shippingCity)
                 except:
                     print 'Couldn\'t find order billing city field'
                     raw_input('Click to continue automation...')
