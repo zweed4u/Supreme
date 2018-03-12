@@ -1,10 +1,8 @@
 #!/usr/bin/python3
 # Zachary Weeden 2018
 
-import os
-import time
-from threading import Thread
 import sys
+import threading
 from PyQt4 import QtGui
 from supreme_3 import SupremeProduct
 
@@ -62,7 +60,9 @@ class MyWidget(QtGui.QWidget):
         self.product_color = self.product_color_field.text()
         self.product_size = self.product_size_field.text()
         self.product_quantity = int(self.product_quantity_field.text())
-        SupremeProduct(self.product_name, self.product_color, self.product_size, self.product_quantity)
+        product_thread = threading.Thread(target=SupremeProduct, args=(self.product_name, self.product_color, self.product_size, self.product_quantity,))
+        print(f'[[ Thread ]]{str(self.product_name)} :: {str(self.product_size)} :: {str(self.product_color)} :: {str(self.product_quantity)} :: Thread initialized!')
+        product_thread.start()
 
     def exit(self):
         """
