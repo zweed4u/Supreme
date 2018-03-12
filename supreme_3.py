@@ -44,7 +44,7 @@ class Config:
 
 
 class SupremeProduct:
-    def __init__(self, item_name, item_color, item_size, item_quantity, thread_color):
+    def __init__(self, item_name, item_color, item_size, item_quantity, thread_color='\033[0m'):
         self.item_name = item_name
         self.item_color = item_color
         self.item_size = item_size
