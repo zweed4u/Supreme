@@ -12,6 +12,8 @@ from requests.utils import dict_from_cookiejar
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
 
+COLOR_END = '\033[0m'
+
 
 class SupremeProduct:
     def __init__(self, item_name, item_color, item_size, item_quantity, billing_shipping_info, poll=5, thread_color='\033[0m'):
