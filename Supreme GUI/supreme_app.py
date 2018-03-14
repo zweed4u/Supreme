@@ -7,12 +7,15 @@ from PyQt4 import QtGui
 from supreme_3 import SupremeProduct
 
 
-class MyWidget(QtGui.QWidget):
-    def __init__(self):
+class SupremeWidget(QtGui.QWidget):
+    def __init__(self, user_config_dict):
         """
         Constructor for GUI widget
         """
-        super(MyWidget, self).__init__()
+        super(SupremeWidget, self).__init__()
+
+        # This is all our billing/shipping info
+        self.user_config_dict = user_config_dict
 
         # layout stuff
         # TODO also include config information here - billing, etc.
@@ -144,7 +147,7 @@ class MyWidget(QtGui.QWidget):
             self.product_color = self.field_elements[product_field]['color'].text()
             self.product_size = self.field_elements[product_field]['size'].text()
             self.product_quantity = int(self.field_elements[product_field]['quantity'].text())
-            product_thread = threading.Thread(target=SupremeProduct, args=(self.product_name, self.product_color, self.product_size, self.product_quantity,))
+            product_thread = threading.Thread(target=SupremeProduct, args=(self.product_name, self.product_color, self.product_size, self.product_quantity, self.user_config_dict,))
             print(f'[[ Thread ]] {str(self.product_name)} :: {str(self.product_size)} :: {str(self.product_color)} :: {str(self.product_quantity)} :: Thread initialized!')
             product_thread.start()
 
@@ -163,9 +166,8 @@ def main():
     :return:
     """
     app = QtGui.QApplication(sys.argv)
-    myWidget = MyWidget()
+    supremeWidget = SupremeWidget()
     sys.exit(app.exec_())
-
 
 if __name__ == '__main__':
     main()

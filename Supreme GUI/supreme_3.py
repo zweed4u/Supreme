@@ -2,49 +2,21 @@
 # Zachary Weeden 2018
 
 import os
-import random
 import sys
-import configparser
 import json
 import datetime
 import requests
 import time
-from colorCodes import *
 import threading
 from requests.utils import dict_from_cookiejar
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
 
-root_directory = os.getcwd()
-c = configparser.ConfigParser()
-configFilePath = os.path.join(root_directory, 'config.cfg')
-c.read(configFilePath)
-
-
-class Config:
-    productNames = list(dict(c.items('productName')).values())
-    productColors = list(dict(c.items('productColor')).values())
-    productSizes = list(dict(c.items('productSize')).values())
-    productQuantities = list(dict(c.items('productQty')).values())
-    poll = int(c.get('timeComponents', 'poll'))
-    ghostCheckoutPrevention = int(c.get('timeComponents', 'ghostCheckoutPrevention'))
-    billingName = c.get('cardInfo', 'firstAndLast')
-    email = c.get('cardInfo', 'email')
-    phone = c.get('cardInfo', 'phone')
-    streetAddress = c.get('cardInfo', 'address')
-    zipCode = c.get('cardInfo', 'zip')
-    shippingCity = c.get('cardInfo', 'city')
-    shippingState = c.get('cardInfo', 'state')
-    shippingCountry = c.get('cardInfo', 'country')
-    cardType = c.get('cardInfo', 'cardType')
-    cardNumber = c.get('cardInfo', 'cardNumber')
-    cardMonth = c.get('cardInfo', 'cardMonth')
-    cardYear = c.get('cardInfo', 'cardYear')
-    cardCVV = c.get('cardInfo', 'cardCVV')
-
 
 class SupremeProduct:
-    def __init__(self, item_name, item_color, item_size, item_quantity, thread_color='\033[0m'):
+    def __init__(self, item_name, item_color, item_size, item_quantity, billing_shipping_info, poll=5, thread_color='\033[0m'):
+        self.poll = poll
+        self.billing_shipping_info = billing_shipping_info
         self.item_name = item_name
         self.item_color = item_color
         self.item_size = item_size
@@ -115,35 +87,35 @@ class SupremeProduct:
         try:
             customer_name = webdriver_instance.find_element_by_id('order_billing_name')
             customer_name.clear()
-            customer_name.send_keys(user_config.billingName)
+            customer_name.send_keys(self.billing_shipping_info['firstAndLast'])
         except:
             print('Couldn\'t find order billing name field')
             input('Click to continue automation...')
         try:
             customer_email = webdriver_instance.find_element_by_id('order_email')
             customer_email.clear()
-            customer_email.send_keys(user_config.email)
+            customer_email.send_keys(self.billing_shipping_info['email'])
         except:
             print('Couldn\'t find order email field')
             input('Click to continue automation...')
         try:
             customer_telephone = webdriver_instance.find_element_by_id('order_tel')
             customer_telephone.clear()
-            customer_telephone.send_keys(user_config.phone)
+            customer_telephone.send_keys(self.billing_shipping_info['phone'])
         except:
             print('Couldn\'t find order tel field')
             input('Click to continue automation...')
         try:
             customer_address = webdriver_instance.find_element_by_id('bo')
             customer_address.clear()
-            customer_address.send_keys(user_config.streetAddress)
+            customer_address.send_keys(self.billing_shipping_info['address'])
         except:
             print('Couldn\'t find bo field (address)')
             input('Click to continue automation...')
         try:
             customer_zip = webdriver_instance.find_element_by_id('order_billing_zip')
             customer_zip.clear()
-            customer_zip.send_keys(user_config.zipCode)
+            customer_zip.send_keys(self.billing_shipping_info['zip'])
         except:
             print('Couldn\'t find order billing zip field')
             input('Click to continue automation...')
@@ -153,45 +125,45 @@ class SupremeProduct:
             # customer_city = webdriver_instance.find_element_by_id('order_billing_city')
             # customer_city.click()
             # customer_city.clear()
-            # customer_city.send_keys(user_config.shippingCity)
+            # customer_city.send_keys(self.billing_shipping_info['city'])
         except:
             print('Couldn\'t find order billing city field')
             input('Click to continue automation...')
         try:
             customer_state = Select(webdriver_instance.find_element_by_id('order_billing_state'))
-            customer_state.select_by_value(user_config.shippingState.upper())  # or visible text
+            customer_state.select_by_value(self.billing_shipping_info['state'].upper())  # or visible text
         except:
             print('Couldn\'t find order billing state dropdown/value')
             input('Click to continue automation...')
         try:
             customer_country = Select(webdriver_instance.find_element_by_id('order_billing_country'))
-            customer_country.select_by_value(user_config.shippingCountry.upper())  # or visible text (USA or CANADA)
+            customer_country.select_by_value(self.billing_shipping_info['country'].upper())  # or visible text (USA or CANADA)
         except:
             print('Couldn\'t find order billing country drowpdown/value')
             input('Click to continue automation...')
         try:
             customer_card_number = webdriver_instance.find_element_by_id('nnaerb')
             customer_card_number.clear()
-            customer_card_number.send_keys(user_config.cardNumber)
+            customer_card_number.send_keys(self.billing_shipping_info['cardNumber'])
         except:
             print('Couldn\'t find nnaerb field (card number)')
             input('Click to continue automation...')
         try:
             customer_card_month = Select(webdriver_instance.find_element_by_id('credit_card_month'))  # month must be padded eg. 09
-            customer_card_month.select_by_value(user_config.cardMonth)
+            customer_card_month.select_by_value(self.billing_shipping_info['cardMonth'])
         except:
             print('Couldn\'t find credit card month dropdown/value')
             input('Click to continue automation...')
         try:
             customer_card_year = Select(webdriver_instance.find_element_by_id('credit_card_year'))
-            customer_card_year.select_by_value(user_config.cardYear)
+            customer_card_year.select_by_value(self.billing_shipping_info['cardYear'])
         except:
             print('Couldn\'t find credit card year dropdown/value')
             input('Click to continue automation...')
         try:
             customer_card_cvv = webdriver_instance.find_element_by_id('orcer')
             customer_card_cvv.clear()
-            customer_card_cvv.send_keys(user_config.cardCVV)
+            customer_card_cvv.send_keys(self.billing_shipping_info['cardCVV'])
         except:
             print('Couldn\'t find orcer field (card cvv)')
             input('Click to continue automation...')
@@ -255,7 +227,7 @@ class SupremeProduct:
                         sys.stdout.write(f'[[ {self.thread_text_color}{str(threading.current_thread().getName())}{COLOR_END} ]] {utc_to_est()} :: [[{self.thread_text_color}{listed_product_name}{COLOR_END} ]] {str(listed_product_id)} found ( MATCHING ITEM DETECTED )\n')
             if self.product_found != 1:
                 sys.stdout.write(f'[[ {self.thread_text_color}{str(threading.current_thread().getName())}{COLOR_END} ]] {utc_to_est()} :: Reloading and reparsing page...\n')
-                time.sleep(user_config.poll)
+                time.sleep(self.poll)
             else:
                 color_id, size_id = self.find_product_variant(listed_product_name, listed_product_id)
                 self.add_to_cart(listed_product_name, listed_product_id, color_id, size_id)
@@ -264,17 +236,3 @@ class SupremeProduct:
 def utc_to_est():
     current = datetime.datetime.now()
     return f'{str(current)} EST'
-
-if __name__ == '__main__':
-    user_config = Config()
-    assert len(user_config.productNames) == len(user_config.productColors) == len(user_config.productSizes) == len(user_config.productQuantities), 'Assertion Error: Product section lengths unmatched'
-    for supreme_product_index in  range(0, len(user_config.productNames)):
-        color_text = random.choice(list(colorCodes.values()))
-        colorCodes = {key: val for key, val in colorCodes.items() if val != color_text}
-        itemName = user_config.productNames[supreme_product_index].title()
-        itemSize = user_config.productSizes[supreme_product_index].title()
-        itemColor = user_config.productColors[supreme_product_index].title()
-        itemQuantity = user_config.productQuantities[supreme_product_index]
-        product_thread = threading.Thread(target=SupremeProduct, args=(itemName, itemColor, itemSize, itemQuantity, color_text,))
-        print(f'[[ {color_text}Thread-{str(supreme_product_index + 1)}{COLOR_END}]] {color_text}{str(itemName)} :: {str(itemSize)} :: {str(itemColor)} :: {str(itemQuantity)} :: Thread initialized!{COLOR_END}')
-        product_thread.start()
