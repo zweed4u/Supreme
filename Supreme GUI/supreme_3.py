@@ -188,11 +188,9 @@ class SupremeProduct:
     def start_webdriver(self, response):
         driver = webdriver.Chrome(f'{os.getcwd()}/chromedriver')  # chromedriver bin must be in folder of invocation -implement check
         driver.get('http://www.supremenewyork.com/shop/cart')  # commonly carts
-        time.sleep(1)
         driver.delete_all_cookies()
         for key, value in dict_from_cookiejar(response.cookies).items():
             driver.add_cookie({'name': key, 'value': value})
-        time.sleep(1)
         driver.refresh()
         self.checkout(driver)
 

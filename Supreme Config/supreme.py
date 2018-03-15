@@ -194,11 +194,9 @@ def productThread(name, size, color, qty, textColor, selectedCaptchaToken):
                     os.getcwd()))  # chromedriver bin must be in folder of invocation -implement check
                 driver.get(
                     'http://www.supremenewyork.com/shop/cart')  # commonly carts
-                time.sleep(1)
                 driver.delete_all_cookies()
                 for key, value in dict_from_cookiejar(addResp.cookies).items():
                     driver.add_cookie({'name': key, 'value': value})
-                time.sleep(1)
                 driver.refresh()
                 driver.get('https://www.supremenewyork.com/checkout')
                 # print json.dumps(driver.get_cookies(), indent=4)  # trust that cookies were transferred to selenium properly - EditThisCookie use case
