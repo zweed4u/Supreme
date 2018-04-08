@@ -53,6 +53,7 @@ class SupremeProduct:
         self.product_found = 0
         self.product_color_found = 0
         self.product_size_found = 0
+        self.driver = webdriver.Chrome(f'{os.getcwd()}/chromedriver')
         self.find_product()
 
     def fetch_mobile_stock(self):
@@ -212,13 +213,13 @@ class SupremeProduct:
         #     input('Click to continue automation...')
 
     def start_webdriver(self, response):
-        driver = webdriver.Chrome(f'{os.getcwd()}/chromedriver')  # chromedriver bin must be in folder of invocation -implement check
-        driver.get('http://www.supremenewyork.com/shop/cart')  # commonly carts
-        driver.delete_all_cookies()
+        #driver = webdriver.Chrome(f'{os.getcwd()}/chromedriver')  # chromedriver bin must be in folder of invocation -implement check
+        self.driver.get('http://www.supremenewyork.com/shop/cart')  # commonly carts
+        self.driver.delete_all_cookies()
         for key, value in dict_from_cookiejar(response.cookies).items():
-            driver.add_cookie({'name': key, 'value': value})
-        driver.refresh()
-        self.checkout(driver)
+            self.driver.add_cookie({'name': key, 'value': value})
+        self.driver.refresh()
+        self.checkout(self.driver)
 
     def add_to_cart(self, listed_product_name, product_base_id, product_color_id, product_size_id):
         sys.stdout.write(f'[[ {self.thread_text_color}{str(threading.current_thread().getName())}{COLOR_END} ]] {utc_to_est()} :: Adding [[ {self.thread_text_color}{listed_product_name}{COLOR_END} ]] to cart...\n')
