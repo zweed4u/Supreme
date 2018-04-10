@@ -202,15 +202,14 @@ def productThread(name, size, color, qty, textColor, selectedCaptchaToken):
                 # print json.dumps(driver.get_cookies(), indent=4)  # trust that cookies were transferred to selenium properly - EditThisCookie use case
                 # This is awful - sorry - safeguard against selector changes
                 try:
-                    customer_name = driver.find_element_by_id(
-                        'order_billing_name')
+                    customer_name = driver.find_element_by_name('order[billing_name]')
                     customer_name.clear()
                     customer_name.send_keys(user_config.billingName)
                 except:
                     print 'Couldn\'t find order billing name field'
                     raw_input('Click to continue automation...')
                 try:
-                    customer_email = driver.find_element_by_id('order_email')
+                    customer_email = driver.find_element_by_name('order[email]')
                     customer_email.clear()
                     customer_email.send_keys(user_config.email)
                 except:
@@ -224,15 +223,14 @@ def productThread(name, size, color, qty, textColor, selectedCaptchaToken):
                     print 'Couldn\'t find order tel field'
                     raw_input('Click to continue automation...')
                 try:
-                    customer_address = driver.find_element_by_id('bo')
+                    customer_address = driver.find_element_by_name('order[billing_address]')
                     customer_address.clear()
                     customer_address.send_keys(user_config.streetAddress)
                 except:
-                    print 'Couldn\'t find bo field (address)'
+                    print 'Couldn\'t find order[billing_address] field (address)'
                     raw_input('Click to continue automation...')
                 try:
-                    customer_zip = driver.find_element_by_id(
-                        'order_billing_zip')
+                    customer_zip = driver.find_element_by_name('order[billing_zip]')
                     customer_zip.clear()
                     customer_zip.send_keys(user_config.zipCode)
                 except:
@@ -241,27 +239,23 @@ def productThread(name, size, color, qty, textColor, selectedCaptchaToken):
                 try:
                     # Let zip code auto fill this
                     pass
-                    #customer_city = driver.find_element_by_id(
-                    #    'order_billing_city')
-                    #customer_city.click()
-                    #customer_city.clear()
-                    #customer_city.send_keys(user_config.shippingCity)
+                    # customer_city = driver.find_element_by_id('order_billing_city')
+                    # customer_city.click()
+                    # customer_city.clear()
+                    # customer_city.send_keys(user_config.shippingCity)
                 except:
                     print 'Couldn\'t find order billing city field'
                     raw_input('Click to continue automation...')
                 try:
-                    customer_state = Select(
-                        driver.find_element_by_id('order_billing_state'))
-                    customer_state.select_by_value(
-                        user_config.shippingState.upper())  # or visible text
+                    customer_state = Select(driver.find_element_by_id('order_billing_state'))
+                    customer_state.select_by_value(user_config.shippingState.upper())  # or visible text
                 except:
                     print 'Couldn\'t find order billing state dropdown/value'
                     raw_input('Click to continue automation...')
                 try:
-                    customer_country = Select(
-                        driver.find_element_by_id('order_billing_country'))
-                    customer_country.select_by_value(
-                        user_config.shippingCountry.upper())  # or visible text (USA or CANADA)
+                    customer_country = Select(driver.find_element_by_name(
+                        'order[billing_country]'))
+                    customer_country.select_by_value(user_config.shippingCountry.upper())  # or visible text (USA or CANADA)
                 except:
                     print 'Couldn\'t find order billing country drowpdown/value'
                     raw_input('Click to continue automation...')
@@ -273,25 +267,26 @@ def productThread(name, size, color, qty, textColor, selectedCaptchaToken):
                     print 'Couldn\'t find nnaerb field (card number)'
                     raw_input('Click to continue automation...')
                 try:
-                    customer_card_month = Select(driver.find_element_by_id(
-                        'credit_card_month'))  # month must be padded eg. 09
+                    customer_card_month = Select(driver.find_element_by_name(
+                    'credit_card[month]'))  # month must be padded eg. 09
                     customer_card_month.select_by_value(user_config.cardMonth)
                 except:
                     print 'Couldn\'t find credit card month dropdown/value'
                     raw_input('Click to continue automation...')
                 try:
-                    customer_card_year = Select(
-                        driver.find_element_by_id('credit_card_year'))
+                    customer_card_year = Select(driver.find_element_by_name(
+                        'credit_card[year]'))
                     customer_card_year.select_by_value(user_config.cardYear)
                 except:
                     print 'Couldn\'t find credit card year dropdown/value'
                     raw_input('Click to continue automation...')
                 try:
-                    customer_card_cvv = driver.find_element_by_id('orcer')
+                    customer_card_cvv = driver.find_element_by_name(
+                        'credit_card[rvv]')
                     customer_card_cvv.clear()
                     customer_card_cvv.send_keys(user_config.cardCVV)
                 except:
-                    print 'Couldn\'t find orcer field (card cvv)'
+                    print 'Couldn\'t find credit_card[rvv] field (card cvv)'
                     raw_input('Click to continue automation...')
                 try:
                     accept_terms = driver.find_element_by_css_selector(

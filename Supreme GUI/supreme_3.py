@@ -88,14 +88,14 @@ class SupremeProduct:
     def checkout(self, webdriver_instance):
         webdriver_instance.get('https://www.supremenewyork.com/checkout')
         try:
-            customer_name = webdriver_instance.find_element_by_id('order_billing_name')
+            customer_name = webdriver_instance.find_element_by_name('order[billing_name]')
             customer_name.clear()
             customer_name.send_keys(self.billing_shipping_info['firstAndLast'])
         except:
             print('Couldn\'t find order billing name field')
             input('Click to continue automation...')
         try:
-            customer_email = webdriver_instance.find_element_by_id('order_email')
+            customer_email = webdriver_instance.find_element_by_name('order[email]')
             customer_email.clear()
             customer_email.send_keys(self.billing_shipping_info['email'])
         except:
@@ -109,14 +109,14 @@ class SupremeProduct:
             print('Couldn\'t find order tel field')
             input('Click to continue automation...')
         try:
-            customer_address = webdriver_instance.find_element_by_id('bo')
+            customer_address = webdriver_instance.find_element_by_name('order[billing_address]')
             customer_address.clear()
             customer_address.send_keys(self.billing_shipping_info['address'])
         except:
-            print('Couldn\'t find bo field (address)')
+            print('Couldn\'t find order[billing_address] field (address)')
             input('Click to continue automation...')
         try:
-            customer_zip = webdriver_instance.find_element_by_id('order_billing_zip')
+            customer_zip = webdriver_instance.find_element_by_name('order[billing_zip]')
             customer_zip.clear()
             customer_zip.send_keys(self.billing_shipping_info['zip'])
         except:
@@ -128,7 +128,7 @@ class SupremeProduct:
             # customer_city = webdriver_instance.find_element_by_id('order_billing_city')
             # customer_city.click()
             # customer_city.clear()
-            # customer_city.send_keys(self.billing_shipping_info['city'])
+            # customer_city.send_keys(user_config.shippingCity)
         except:
             print('Couldn\'t find order billing city field')
             input('Click to continue automation...')
@@ -139,7 +139,7 @@ class SupremeProduct:
             print('Couldn\'t find order billing state dropdown/value')
             input('Click to continue automation...')
         try:
-            customer_country = Select(webdriver_instance.find_element_by_id('order_billing_country'))
+            customer_country = Select(webdriver_instance.find_element_by_name('order[billing_country]'))
             customer_country.select_by_value(self.billing_shipping_info['country'].upper())  # or visible text (USA or CANADA)
         except:
             print('Couldn\'t find order billing country drowpdown/value')
@@ -152,23 +152,23 @@ class SupremeProduct:
             print('Couldn\'t find nnaerb field (card number)')
             input('Click to continue automation...')
         try:
-            customer_card_month = Select(webdriver_instance.find_element_by_id('credit_card_month'))  # month must be padded eg. 09
+            customer_card_month = Select(webdriver_instance.find_element_by_name('credit_card[month]'))  # month must be padded eg. 09
             customer_card_month.select_by_value(self.billing_shipping_info['cardMonth'])
         except:
             print('Couldn\'t find credit card month dropdown/value')
             input('Click to continue automation...')
         try:
-            customer_card_year = Select(webdriver_instance.find_element_by_id('credit_card_year'))
+            customer_card_year = Select(webdriver_instance.find_element_by_name('credit_card[year]'))
             customer_card_year.select_by_value(self.billing_shipping_info['cardYear'])
         except:
             print('Couldn\'t find credit card year dropdown/value')
             input('Click to continue automation...')
         try:
-            customer_card_cvv = webdriver_instance.find_element_by_id('orcer')
+            customer_card_cvv = webdriver_instance.find_element_by_name('credit_card[rvv]')
             customer_card_cvv.clear()
             customer_card_cvv.send_keys(self.billing_shipping_info['cardCVV'])
         except:
-            print('Couldn\'t find orcer field (card cvv)')
+            print('Couldn\'t find credit_card[rvv] field (card cvv)')
             input('Click to continue automation...')
         try:
             accept_terms = webdriver_instance.find_element_by_css_selector('#cart-cc > fieldset > p:nth-child(4) > label > div > ins')
