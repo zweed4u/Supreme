@@ -114,16 +114,20 @@ class SupremeProduct:
     def checkout(self, webdriver_instance):
         webdriver_instance.get('https://www.supremenewyork.com/checkout')
         try:
-            customer_name = webdriver_instance.find_element_by_name('order[billing_name]')
-            customer_name.clear()
-            customer_name.send_keys(user_config.billingName)
+            #customer_name = webdriver_instance.find_element_by_name('order[billing_name]')
+            webdriver_instance.execute_script('document.getElementById(\'order_billing_name\').value = ""')
+            #customer_name.clear()
+            webdriver_instance.execute_script('document.getElementById(\'order_billing_name\').value = "{}"'.format(user_config.billingName))
+            #customer_name.send_keys(user_config.billingName)
         except:
             print('Couldn\'t find order billing name field')
             input('Click to continue automation...')
         try:
-            customer_email = webdriver_instance.find_element_by_name('order[email]')
-            customer_email.clear()
-            customer_email.send_keys(user_config.email)
+            #customer_email = webdriver_instance.find_element_by_name('order[email]')
+            webdriver_instance.execute_script('document.getElementById(\'order_email\').value = ""')
+            #customer_email.clear()
+            webdriver_instance.execute_script('document.getElementById(\'order_email\').value = "{}"'.format(user_config.email))
+            #customer_email.send_keys(user_config.email)
         except:
             print('Couldn\'t find order email field')
             input('Click to continue automation...')
@@ -135,25 +139,31 @@ class SupremeProduct:
             print('Couldn\'t find order tel field')
             input('Click to continue automation...')
         try:
-            customer_address = webdriver_instance.find_element_by_name('order[billing_address]')
-            customer_address.clear()
-            customer_address.send_keys(user_config.streetAddress)
+            #customer_address = webdriver_instance.find_element_by_name('order[billing_address]')
+            webdriver_instance.execute_script('document.getElementById(\'bo\').value = ""')
+            #customer_address.clear()
+            webdriver_instance.execute_script('document.getElementById(\'bo\').value = "{}"'.format(user_config.streetAddress))
+            #customer_address.send_keys(user_config.streetAddress)
         except:
             print('Couldn\'t find order[billing_address] field (address)')
             input('Click to continue automation...')
         try:
-            customer_zip = webdriver_instance.find_element_by_name('order[billing_zip]')
-            customer_zip.clear()
-            customer_zip.send_keys(user_config.zipCode)
+            #customer_zip = webdriver_instance.find_element_by_name('order[billing_zip]')
+            webdriver_instance.execute_script('document.getElementById(\'order_billing_zip\').value = ""')
+            #customer_zip.clear()
+            webdriver_instance.execute_script('document.getElementById(\'order_billing_zip\').value = "{}"'.format(user_config.zipCode))
+            #customer_zip.send_keys(user_config.zipCode)
         except:
             print('Couldn\'t find order billing zip field')
             input('Click to continue automation...')
         try:
-            # Let zip code auto fill this
-            pass
+            # OLD: # Let zip code auto fill this
+            # pass
             # customer_city = webdriver_instance.find_element_by_id('order_billing_city')
             # customer_city.click()
+            webdriver_instance.execute_script('document.getElementById(\'order_billing_city\').value = ""')
             # customer_city.clear()
+            webdriver_instance.execute_script('document.getElementById(\'order_billing_city\').value = "{}"'.format(user_config.shippingCity))
             # customer_city.send_keys(user_config.shippingCity)
         except:
             print('Couldn\'t find order billing city field')
@@ -190,9 +200,11 @@ class SupremeProduct:
             print('Couldn\'t find credit card year dropdown/value')
             input('Click to continue automation...')
         try:
-            customer_card_cvv = webdriver_instance.find_element_by_name('credit_card[rvv]')
-            customer_card_cvv.clear()
-            customer_card_cvv.send_keys(user_config.cardCVV)
+            #customer_card_cvv = webdriver_instance.find_element_by_name('credit_card[rvv]')
+            webdriver_instance.execute_script('document.getElementById(\'orcer\').value = ""')
+            #customer_card_cvv.clear()
+            webdriver_instance.execute_script('document.getElementById(\'orcer\').value = "{}"'.format(user_config.cardCVV))
+            #customer_card_cvv.send_keys(user_config.cardCVV)
         except:
             print('Couldn\'t find credit_card[rvv] field (card cvv)')
             input('Click to continue automation...')
