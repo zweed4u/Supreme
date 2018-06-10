@@ -240,7 +240,20 @@ class SupremeProduct:
             'st': str(product_color_id),
             'qty': str(self.item_quantity)
         }
-        atc_response = requests.request('POST', f'http://www.supremenewyork.com/shop/{product_base_id}/add.json', data=add_payload)
+        headers = {
+            'Host':              'www.supremenewyork.com',
+            'Accept':            'application/json',
+            'Proxy-Connection':  'keep-alive',
+            'X-Requested-With':  'XMLHttpRequest',
+            'Accept-Encoding':   'gzip, deflate',
+            'Accept-Language':   'en-us',
+            'Content-Type':      'application/x-www-form-urlencoded',
+            'Origin':            'http://www.supremenewyork.com',
+            'Connection':        'keep-alive',
+            'User-Agent':        'Mozilla/5.0 (iPhone; CPU iPhone OS 10_2 like Mac OS X) AppleWebKit/602.3.12 (KHTML, like Gecko) Mobile/14C92',
+            'Referer':           'http://www.supremenewyork.com/mobile'
+        }
+        atc_response = requests.request('POST', f'http://www.supremenewyork.com/shop/{product_base_id}/add.json', data=add_payload, headers=headers)
 
         if atc_response.status_code != 200:  # DID ITEM ADD TO CART - wait/sleep and make POST again
             sys.stdout.write(f'[[ {self.thread_text_color}{str(threading.current_thread().getName())}{COLOR_END} ]] {utc_to_est()} :: {str(atc_response.status_code)} Error [[ {self.thread_text_color}{listed_product_name}{COLOR_END} ]] {FAIL}FAILED!{COLOR_END}\n')
