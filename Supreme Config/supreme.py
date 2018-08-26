@@ -17,6 +17,7 @@ from selenium.webdriver.support.ui import Select
 import platform
 import zipfile
 import contextlib
+import glob
 
 root_directory = os.getcwd()
 c = configparser.ConfigParser()
@@ -312,7 +313,9 @@ class ChromeDriverGetter:
         zip_ref = zipfile.ZipFile(self.zip_file_name,'r')
         zip_ref.extractall(os.getcwd())
         zip_ref.close()
-        return f'{os.getcwd()}/{zip_ref.infolist()[0].filename}'  # extracted file's name
+        chromedriver_binary_path = f'{os.getcwd()}/{zip_ref.infolist()[0].filename}'  # extracted file's name
+        os.chmod(chromedriver_binary_path, 0o655)
+        return chromedriver_binary_path
 
     def clean_up(self):
         print('Removing zip file if it exists')
@@ -325,10 +328,16 @@ def utc_to_est():
     return f'{str(current)} EST'
 
 if __name__ == '__main__':
-    cdg = ChromeDriverGetter()
-    cdg.download()
-    chromedriver_executable_file = cdg.unzip()
-    cdg.clean_up()
+    if len(glob.glob('*.zip')):
+        for zipfile in glob.glob('*.zip'):
+            os.remove(zipfile)
+    if len(glob.glob('chromedriver*')) == 0:
+        cdg = ChromeDriverGetter()
+        cdg.download()
+        chromedriver_executable_file = cdg.unzip()
+        cdg.clean_up()
+    else:
+        chromedriver_executable_file = glob.glob('chromedriver*')[0]  # assume there is only one filename match
     user_config = Config()
     assert len(user_config.productNames) == len(user_config.productColors) == len(user_config.productSizes) == len(user_config.productQuantities), 'Assertion Error: Product section lengths unmatched'
     for supreme_product_index in  range(0, len(user_config.productNames)):
