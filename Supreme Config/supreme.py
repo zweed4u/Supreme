@@ -314,7 +314,7 @@ class ChromeDriverGetter:
         zip_ref.extractall(os.getcwd())
         zip_ref.close()
         chromedriver_binary_path = f'{os.getcwd()}/{zip_ref.infolist()[0].filename}'  # extracted file's name
-        os.chmod(chromedriver_binary_path, 0o655)
+        os.chmod(chromedriver_binary_path, 0o755)
         return chromedriver_binary_path
 
     def clean_up(self):
