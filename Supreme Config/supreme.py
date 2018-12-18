@@ -72,13 +72,13 @@ class SupremeProduct:
             'Accept-Language': 'en-us',
             'X-Requested-With': 'XMLHttpRequest'
         }
-        return requests.request('GET', 'http://www.supremenewyork.com/mobile_stock.json', headers=headers).json()
+        return requests.request('GET', 'https://www.supremenewyork.com/mobile_stock.json', headers=headers).json()
 
     def get_product_information(self, product_id):
-        return requests.request('GET', f'http://www.supremenewyork.com/shop/{str(product_id)}.json', headers={'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_3 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Mobile/13G34'}).json()
+        return requests.request('GET', f'https://www.supremenewyork.com/shop/{str(product_id)}.json', headers={'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 9_3_3 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Mobile/13G34'}).json()
 
     def find_product_variant(self, product_name, product_id):
-        sys.stdout.write(f'[[ {self.thread_text_color}{str(threading.current_thread().getName())}{COLOR_END} ]] {utc_to_est()} :: Selecting [[{self.thread_text_color}{product_name}{COLOR_END}]] ( {str(product_id)} )\n')
+        sys.stdout.write(f'[[ {self.thread_text_color}{str(threading.current_thread().getName())}{COLOR_END} ]] {utc_to_est()} :: Selecting [[ {self.thread_text_color}{product_name}{COLOR_END} ]] ( {str(product_id)} )\n')
         product_info = self.get_product_information(product_id)
         for listed_product_colors in product_info['styles']:
             if self.item_color.lower() in listed_product_colors['name'].lower():
@@ -230,7 +230,7 @@ class SupremeProduct:
 
     def start_webdriver(self, response):
         #driver = webdriver.Chrome(f'{os.getcwd()}/chromedriver')  # chromedriver bin must be in folder of invocation -implement check
-        self.driver.get('http://www.supremenewyork.com/shop/cart')  # commonly carts
+        self.driver.get('https://www.supremenewyork.com/shop/cart')  # commonly carts
         self.driver.delete_all_cookies()
         for key, value in dict_from_cookiejar(response.cookies).items():
             self.driver.add_cookie({'name': key, 'value': value})
@@ -257,7 +257,7 @@ class SupremeProduct:
             'User-Agent':        'Mozilla/5.0 (iPhone; CPU iPhone OS 10_2 like Mac OS X) AppleWebKit/602.3.12 (KHTML, like Gecko) Mobile/14C92',
             'Referer':           'http://www.supremenewyork.com/mobile'
         }
-        atc_response = requests.request('POST', f'http://www.supremenewyork.com/shop/{product_base_id}/add.json', data=add_payload, headers=headers)
+        atc_response = requests.request('POST', f'https://www.supremenewyork.com/shop/{product_base_id}/add.json', data=add_payload, headers=headers)
 
         if atc_response.status_code != 200:  # DID ITEM ADD TO CART - wait/sleep and make POST again
             sys.stdout.write(f'[[ {self.thread_text_color}{str(threading.current_thread().getName())}{COLOR_END} ]] {utc_to_est()} :: {str(atc_response.status_code)} Error [[ {self.thread_text_color}{listed_product_name}{COLOR_END} ]] {FAIL}FAILED!{COLOR_END}\n')
@@ -280,7 +280,7 @@ class SupremeProduct:
                         self.product_found = 1
                         listed_product_name = item['name']
                         listed_product_id = item['id']
-                        sys.stdout.write(f'[[ {self.thread_text_color}{str(threading.current_thread().getName())}{COLOR_END} ]] {utc_to_est()} :: [[{self.thread_text_color}{listed_product_name}{COLOR_END} ]] {str(listed_product_id)} found ( MATCHING ITEM DETECTED )\n')
+                        sys.stdout.write(f'[[ {self.thread_text_color}{str(threading.current_thread().getName())}{COLOR_END} ]] {utc_to_est()} :: [[ {self.thread_text_color}{listed_product_name}{COLOR_END} ]] {str(listed_product_id)} found ( MATCHING ITEM DETECTED )\n')
             if self.product_found != 1:
                 sys.stdout.write(f'[[ {self.thread_text_color}{str(threading.current_thread().getName())}{COLOR_END} ]] {utc_to_est()} :: Reloading and reparsing page...\n')
                 time.sleep(user_config.poll)
@@ -337,7 +337,7 @@ if __name__ == '__main__':
         chromedriver_executable_file = cdg.unzip()
         cdg.clean_up()
     else:
-        chromedriver_executable_file = glob.glob('chromedriver*')[0]  # assume there is only one filename match
+        chromedriver_executable_file = f'{os.getcwd()}/{glob.glob("chromedriver*")[0]}'  # assume there is only one filename match
     user_config = Config()
     assert len(user_config.productNames) == len(user_config.productColors) == len(user_config.productSizes) == len(user_config.productQuantities), 'Assertion Error: Product section lengths unmatched'
     for supreme_product_index in  range(0, len(user_config.productNames)):
@@ -348,5 +348,5 @@ if __name__ == '__main__':
         itemColor = user_config.productColors[supreme_product_index].title()
         itemQuantity = user_config.productQuantities[supreme_product_index]
         product_thread = threading.Thread(target=SupremeProduct, args=(itemName, itemColor, itemSize, itemQuantity, color_text, chromedriver_executable_file,))
-        print(f'[[ {color_text}Thread-{str(supreme_product_index + 1)}{COLOR_END}]] {color_text}{str(itemName)} :: {str(itemSize)} :: {str(itemColor)} :: {str(itemQuantity)} :: Thread initialized!{COLOR_END}')
+        print(f'[[ {color_text}Thread-{str(supreme_product_index + 1)}{COLOR_END} ]] {color_text}{str(itemName)} :: {str(itemSize)} :: {str(itemColor)} :: {str(itemQuantity)} :: Thread initialized!{COLOR_END}')
         product_thread.start()

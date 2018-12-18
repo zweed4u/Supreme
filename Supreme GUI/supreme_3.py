@@ -202,7 +202,7 @@ class SupremeProduct:
             'st': str(product_color_id),
             'qty': str(self.item_quantity)
         }
-        atc_response = requests.request('POST', f'http://www.supremenewyork.com/shop/{product_base_id}/add.json', data=add_payload)
+        atc_response = requests.request('POST', f'https://www.supremenewyork.com/shop/{product_base_id}/add.json', data=add_payload)
 
         if atc_response.status_code != 200:  # DID ITEM ADD TO CART - wait/sleep and make POST again
             sys.stdout.write(f'[[ {self.thread_text_color}{str(threading.current_thread().getName())}{COLOR_END} ]] {utc_to_est()} :: {str(atc_response.status_code)} Error [[ {self.thread_text_color}{listed_product_name}{COLOR_END} ]] {FAIL}FAILED!{COLOR_END}\n')
