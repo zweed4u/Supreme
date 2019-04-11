@@ -4,4 +4,4 @@
 Edit `config.cfg.example` accordingly and save as `config.cfg`  
 `pipenv install`  
 `pipenv shell`  
-`python supreme.py`
+`pipenv run python supreme.py`

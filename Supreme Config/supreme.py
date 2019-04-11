@@ -265,8 +265,21 @@ class SupremeProduct:
             sys.exit()
         else:
             if atc_response.json() == []:  # request was OK but did not add item to cart - wait/sleep and make POST again
-                sys.stdout.write(f'[[ {self.thread_text_color}{str(threading.current_thread().getName())}{COLOR_END} ]] {utc_to_est()} :: Response Empty! - Problem Adding to Cart! [[ {self.thread_text_color}{listed_product_name}{COLOR_END} ]] {FAIL}FAILED!{COLOR_END}\n')  # CHECK THIS - DID ITEM ADD TO CART? MAKE POST AGAIN
-                sys.exit()
+                sys.stdout.write(f'[[ {self.thread_text_color}{str(threading.current_thread().getName())}{COLOR_END} ]] {utc_to_est()} :: Response Empty! - Problem Adding to Cart! [[ {self.thread_text_color}{listed_product_name}{COLOR_END} ]] {FAIL}FAILED!{COLOR_END} - {self.thread_text_color}Trying once more with different payload{COLOR_END}\n')  # CHECK THIS - DID ITEM ADD TO CART? MAKE POST AGAIN
+                add_payload = {
+                    'size': str(product_size_id),
+                    'style': str(product_color_id),
+                    'qty': str(self.item_quantity)
+                }
+                atc_response = requests.request('POST', f'https://www.supremenewyork.com/shop/{product_base_id}/add.json', data=add_payload, headers=headers)
+                if atc_response.status_code != 200:  # DID ITEM ADD TO CART - wait/sleep and make POST again
+                    sys.stdout.write(f'[[ {self.thread_text_color}{str(threading.current_thread().getName())}{COLOR_END} ]] {utc_to_est()} :: {str(atc_response.status_code)} Error [[ {self.thread_text_color}{listed_product_name}{COLOR_END} ]] {FAIL}FAILED!{COLOR_END}\n')
+                    sys.stdout.write(f'[[ {self.thread_text_color}{str(threading.current_thread().getName())}{COLOR_END} ]] {addResp.json()}\n')
+                    sys.exit()
+                else:
+                    if atc_response.json() == []:  # request was OK but did not add item to cart - wait/sleep and make POST again
+                        sys.stdout.write(f'[[ {self.thread_text_color}{str(threading.current_thread().getName())}{COLOR_END} ]] {utc_to_est()} :: Response Empty! - Problem Adding to Cart! [[ {self.thread_text_color}{listed_product_name}{COLOR_END} ]] {FAIL}FAILED AGAIN EXITING!{COLOR_END}\n')  # CHECK THIS - DID ITEM ADD TO CART? MAKE POST AGAIN
+                        sys.exit()
             sys.stdout.write(f'[[ {self.thread_text_color}{str(threading.current_thread().getName())}{COLOR_END} ]] {utc_to_est()} :: [[ {self.thread_text_color}{listed_product_name} - {str(self.item_color)} - {str(self.item_size)}{COLOR_END} ]] added to cart!\n')
         self.show_cookies(atc_response)
         self.start_webdriver(atc_response)
