@@ -117,105 +117,237 @@ class SupremeProduct:
 
     def checkout(self, webdriver_instance):
         webdriver_instance.get('https://www.supremenewyork.com/checkout')
-        try:
-            #customer_name = webdriver_instance.find_element_by_name('order[billing_name]')
-            webdriver_instance.execute_script('document.getElementById(\'order_billing_name\').value = ""')
-            #customer_name.clear()
-            webdriver_instance.execute_script('document.getElementById(\'order_billing_name\').value = "{}"'.format(user_config.billingName))
-            #customer_name.send_keys(user_config.billingName)
-        except:
+
+        # Try multiple selectors
+        # TODO actually make javascript get element by selector instead of mix of id, name, css selector
+        possible_name_field_selectors = ['order_billing_name']
+        element_found = False
+        for name_field_selector in  possible_name_field_selectors:
+            try:
+                #customer_name = webdriver_instance.find_element_by_name('order[billing_name]')
+                webdriver_instance.execute_script(f'document.getElementById(\'{name_field_selector}\').value = ""')
+                #customer_name.clear()
+                webdriver_instance.execute_script(f'document.getElementById(\'{name_field_selector}\').value = "{user_config.billingName}"')
+                #customer_name.send_keys(user_config.billingName)
+                element_found = True
+                break
+            except:
+                print(f'Couldn\'t find with selector: {name_field_selector}')
+                continue
+
+        if element_found is False:
             print('Couldn\'t find order billing name field')
             input('Click to continue automation...')
-        try:
-            #customer_email = webdriver_instance.find_element_by_name('order[email]')
-            webdriver_instance.execute_script('document.getElementById(\'order_email\').value = ""')
-            #customer_email.clear()
-            webdriver_instance.execute_script('document.getElementById(\'order_email\').value = "{}"'.format(user_config.email))
-            #customer_email.send_keys(user_config.email)
-        except:
+
+        element_found = False
+        possible_email_field_selectors = ['order_email']
+        for email_field_selector in  possible_email_field_selectors:
+            try:
+                #customer_email = webdriver_instance.find_element_by_name('order[email]')
+                webdriver_instance.execute_script(f'document.getElementById(\'{email_field_selector}\').value = ""')
+                #customer_email.clear()
+                webdriver_instance.execute_script(f'document.getElementById(\'{email_field_selector}\').value = "{user_config.email}"')
+                #customer_email.send_keys(user_config.email)
+                element_found = True
+                break
+            except:
+                print(f'Couldn\'t find with selector: {email_field_selector}')
+                continue
+
+        if element_found is False:
             print('Couldn\'t find order email field')
             input('Click to continue automation...')
-        try:
-            customer_telephone = webdriver_instance.find_element_by_id('order_tel')
-            customer_telephone.clear()
-            customer_telephone.send_keys(user_config.phone)
-        except:
+
+        element_found = False
+        possible_phone_field_selectors = ['order_tel']
+        for phone_field_selector in  possible_phone_field_selectors:
+            try:
+                customer_telephone = webdriver_instance.find_element_by_id(phone_field_selector)
+                customer_telephone.clear()
+                customer_telephone.send_keys(user_config.phone)
+                element_found = True
+                break
+            except:
+                print(f'Couldn\'t find with selector: {phone_field_selector}')
+                continue
+
+        if element_found is False:
             print('Couldn\'t find order tel field')
             input('Click to continue automation...')
-        try:
-            #customer_address = webdriver_instance.find_element_by_name('order[billing_address]')
-            webdriver_instance.execute_script('document.getElementById(\'bo\').value = ""')
-            #customer_address.clear()
-            webdriver_instance.execute_script('document.getElementById(\'bo\').value = "{}"'.format(user_config.streetAddress))
-            #customer_address.send_keys(user_config.streetAddress)
-        except:
+
+        element_found = False
+        possible_address_field_selectors = ['bo']
+        for address_field_selector in  possible_address_field_selectors:
+            try:
+                #customer_address = webdriver_instance.find_element_by_name('order[billing_address]')
+                webdriver_instance.execute_script(f'document.getElementById(\'{address_field_selector}\').value = ""')
+                #customer_address.clear()
+                webdriver_instance.execute_script(f'document.getElementById(\'{address_field_selector}\').value = "{user_config.streetAddress}"')
+                #customer_address.send_keys(user_config.streetAddress)
+                element_found = True
+                break
+            except:
+                print(f'Couldn\'t find with selector: {address_field_selector}')
+                continue
+
+        if element_found is False:
             print('Couldn\'t find order[billing_address] field (address)')
             input('Click to continue automation...')
-        try:
-            #customer_zip = webdriver_instance.find_element_by_name('order[billing_zip]')
-            webdriver_instance.execute_script('document.getElementById(\'order_billing_zip\').value = ""')
-            #customer_zip.clear()
-            webdriver_instance.execute_script('document.getElementById(\'order_billing_zip\').value = "{}"'.format(user_config.zipCode))
-            #customer_zip.send_keys(user_config.zipCode)
-        except:
+
+        element_found = False
+        possible_zip_field_selectors = ['order_billing_zip']
+        for zip_field_selector in  possible_zip_field_selectors:
+            try:
+                #customer_zip = webdriver_instance.find_element_by_name('order[billing_zip]')
+                webdriver_instance.execute_script(f'document.getElementById(\'{zip_field_selector}\').value = ""')
+                #customer_zip.clear()
+                webdriver_instance.execute_script(f'document.getElementById(\'{zip_field_selector}\').value = "{user_config.zipCode}"')
+                #customer_zip.send_keys(user_config.zipCode)
+                element_found = True
+                break
+            except:
+                print(f'Couldn\'t find with selector: {zip_field_selector}')
+                continue
+
+        if element_found is False:
             print('Couldn\'t find order billing zip field')
             input('Click to continue automation...')
-        try:
-            # OLD: # Let zip code auto fill this
-            # pass
-            # customer_city = webdriver_instance.find_element_by_id('order_billing_city')
-            # customer_city.click()
-            webdriver_instance.execute_script('document.getElementById(\'order_billing_city\').value = ""')
-            # customer_city.clear()
-            webdriver_instance.execute_script('document.getElementById(\'order_billing_city\').value = "{}"'.format(user_config.shippingCity))
-            # customer_city.send_keys(user_config.shippingCity)
-        except:
+
+        element_found = False
+        possible_city_field_selectors = ['order_billing_city']
+        for city_field_selector in  possible_city_field_selectors:
+            try:
+                # OLD: # Let zip code auto fill this
+                # pass
+                # customer_city = webdriver_instance.find_element_by_id('order_billing_city')
+                # customer_city.click()
+                webdriver_instance.execute_script(f'document.getElementById(\'{city_field_selector}\').value = ""')
+                # customer_city.clear()
+                webdriver_instance.execute_script(f'document.getElementById(\'{city_field_selector}\').value = "{user_config.shippingCity}"')
+                # customer_city.send_keys(user_config.shippingCity)
+                element_found = True
+                break
+            except:
+                print(f'Couldn\'t find with selector: {city_field_selector}')
+                continue
+
+        if element_found is False:
             print('Couldn\'t find order billing city field')
             input('Click to continue automation...')
-        try:
-            customer_state = Select(webdriver_instance.find_element_by_id('order_billing_state'))
-            customer_state.select_by_value(user_config.shippingState.upper())  # or visible text
-        except:
+
+        element_found = False
+        possible_state_field_selectors = ['order_billing_state']
+        for state_field_selector in  possible_state_field_selectors:
+            try:
+                customer_state = Select(webdriver_instance.find_element_by_id(state_field_selector))
+                customer_state.select_by_value(user_config.shippingState.upper())  # or visible text
+                element_found = True
+                break
+            except:
+                print(f'Couldn\'t find with selector: {state_field_selector}')
+                continue
+
+        if element_found is False:
             print('Couldn\'t find order billing state dropdown/value')
             input('Click to continue automation...')
-        try:
-            customer_country = Select(webdriver_instance.find_element_by_name('order[billing_country]'))
-            customer_country.select_by_value(user_config.shippingCountry.upper())  # or visible text (USA or CANADA)
-        except:
+
+        element_found = False
+        possible_country_field_selectors = ['order[billing_country]']
+        for country_field_selector in  possible_country_field_selectors:
+            try:
+                customer_country = Select(webdriver_instance.find_element_by_name(country_field_selector))
+                customer_country.select_by_value(user_config.shippingCountry.upper())  # or visible text (USA or CANADA)
+                element_found = True
+                break
+            except:
+                print(f'Couldn\'t find with selector: {country_field_selector}')
+                continue
+
+        if element_found is False:    
             print('Couldn\'t find order billing country drowpdown/value')
             input('Click to continue automation...')
-        try:
-            customer_card_number = webdriver_instance.find_element_by_id('nnaerb')
-            customer_card_number.clear()
-            customer_card_number.send_keys(user_config.cardNumber)
-        except:
+
+        element_found = False
+        possible_card_number_field_selectors = ['nnaerb']
+        for card_number_field_selector in  possible_card_number_field_selectors:
+            try:
+                customer_card_number = webdriver_instance.find_element_by_id(card_number_field_selector)
+                customer_card_number.clear()
+                customer_card_number.send_keys(user_config.cardNumber)
+                element_found = True
+                break
+            except:
+                print(f'Couldn\'t find with selector: {card_number_field_selector}')
+                continue
+
+        if element_found is False:   
             print('Couldn\'t find nnaerb field (card number)')
             input('Click to continue automation...')
-        try:
-            customer_card_month = Select(webdriver_instance.find_element_by_name('credit_card[month]'))  # month must be padded eg. 09
-            customer_card_month.select_by_value(user_config.cardMonth)
-        except:
+
+        element_found = False
+        possible_card_month_field_selectors = ['credit_card[month]']
+        for card_month_field_selector in  possible_card_month_field_selectors:
+            try:
+                customer_card_month = Select(webdriver_instance.find_element_by_name(card_month_field_selector))  # month must be padded eg. 09
+                customer_card_month.select_by_value(user_config.cardMonth)
+                element_found = True
+                break
+            except:
+                print(f'Couldn\'t find with selector: {card_month_field_selector}')
+                continue
+
+        if element_found is False:
             print('Couldn\'t find credit card month dropdown/value')
             input('Click to continue automation...')
-        try:
-            customer_card_year = Select(webdriver_instance.find_element_by_name('credit_card[year]'))
-            customer_card_year.select_by_value(user_config.cardYear)
-        except:
+
+        element_found = False
+        possible_card_year_field_selectors = ['credit_card[year]']
+        for card_year_field_selector in  possible_card_year_field_selectors:
+            try:
+                customer_card_year = Select(webdriver_instance.find_element_by_name(card_year_field_selector))
+                customer_card_year.select_by_value(user_config.cardYear)
+                element_found = True
+                break
+            except:
+                print(f'Couldn\'t find with selector: {card_year_field_selector}')
+                continue
+
+        if element_found is False:
             print('Couldn\'t find credit card year dropdown/value')
             input('Click to continue automation...')
-        try:
-            #customer_card_cvv = webdriver_instance.find_element_by_name('credit_card[rvv]')
-            webdriver_instance.execute_script('document.getElementById(\'orcer\').value = ""')
-            #customer_card_cvv.clear()
-            webdriver_instance.execute_script('document.getElementById(\'orcer\').value = "{}"'.format(user_config.cardCVV))
-            #customer_card_cvv.send_keys(user_config.cardCVV)
-        except:
+
+        element_found = False
+        possible_card_cvv_field_selectors = ['orcer']
+        for card_cvv_field_selector in  possible_card_cvv_field_selectors:
+            try:
+                #customer_card_cvv = webdriver_instance.find_element_by_name('credit_card[rvv]')
+                webdriver_instance.execute_script(f'document.getElementById(\'{card_cvv_field_selector}\').value = ""')
+                #customer_card_cvv.clear()
+                webdriver_instance.execute_script(f'document.getElementById(\'{card_cvv_field_selector}\').value = "{user_config.cardCVV}"')
+                #customer_card_cvv.send_keys(user_config.cardCVV)
+                element_found = True
+                break
+            except:
+                print(f'Couldn\'t find with selector: {card_cvv_field_selector}')
+                continue
+
+        if element_found is False:
             print('Couldn\'t find credit_card[rvv] field (card cvv)')
             input('Click to continue automation...')
-        try:
-            accept_terms = webdriver_instance.find_element_by_css_selector('#cart-cc > fieldset > p:nth-child(4) > label > div > ins')
-            accept_terms.click()
-        except:
+
+        element_found = False
+        possible_accept_terms_radio_selectors = ['#cart-cc > fieldset > p:nth-child(4) > label > div > ins']
+        for accept_terms_radio_selector in  possible_accept_terms_radio_selectors:
+            try:
+                accept_terms = webdriver_instance.find_element_by_css_selector(accept_terms_radio_selector)
+                accept_terms.click()
+                element_found = True
+                break
+            except:
+                print(f'Couldn\'t find with selector: {accept_terms_radio_selector}')
+                continue
+
+        if element_found is False:
             print('Couldn\'t find accept terms radio button')
             input('Click to continue automation...')
 
